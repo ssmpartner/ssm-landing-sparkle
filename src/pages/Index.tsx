@@ -7,6 +7,8 @@ import Comparison from "@/components/Comparison";
 import Gap from "@/components/Gap";
 import Steps from "@/components/Steps";
 import Testimonials from "@/components/Testimonials";
+import Faq from "@/components/Faq";
+import FinalCta from "@/components/FinalCta";
 
 const Index = () => {
   return (
@@ -20,6 +22,8 @@ const Index = () => {
       <Gap />
       <Steps />
       <Testimonials />
+      <Faq />
+      <FinalCta />
     </div>
   );
 };
