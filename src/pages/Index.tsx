@@ -2,6 +2,7 @@ import Topbar from "@/components/Topbar";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import TrustBar from "@/components/TrustBar";
+import Topics from "@/components/Topics";
 
 const Index = () => {
   return (
@@ -10,6 +11,7 @@ const Index = () => {
       <Navigation />
       <Hero />
       <TrustBar />
+      <Topics />
     </div>
   );
 };
