@@ -5,6 +5,8 @@ import TrustBar from "@/components/TrustBar";
 import Topics from "@/components/Topics";
 import Comparison from "@/components/Comparison";
 import Gap from "@/components/Gap";
+import Steps from "@/components/Steps";
+import Testimonials from "@/components/Testimonials";
 
 const Index = () => {
   return (
@@ -16,6 +18,8 @@ const Index = () => {
       <Topics />
       <Comparison />
       <Gap />
+      <Steps />
+      <Testimonials />
     </div>
   );
 };
