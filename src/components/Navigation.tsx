@@ -22,7 +22,7 @@ const Navigation = () => {
         zIndex: 100,
       }}
     >
-      <div className="flex items-center justify-between">
+      <div className="mx-auto flex items-center justify-between" style={{ maxWidth: 1180 }}>
         <a href="/" className="flex items-center">
           <img src="/ssm_logo.svg" alt="SSM Partner AG" style={{ height: 30 }} />
         </a>
