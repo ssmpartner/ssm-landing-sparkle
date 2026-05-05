@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import BookingCard from "./BookingCard";
 
 const trustPoints = [
   "Kostenlos & unverbindlich",
@@ -118,8 +119,8 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* RIGHT (placeholder for booking form) */}
-        <div />
+        {/* RIGHT */}
+        <BookingCard />
       </div>
     </section>
   );
