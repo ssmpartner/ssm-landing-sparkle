@@ -54,23 +54,15 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        ssm: {
-          primaer: {
-            DEFAULT: "hsl(var(--ssm-primaer))",
-            dark: "hsl(var(--ssm-primaer-dark))",
-          },
-          sekundaer: "hsl(var(--ssm-sekundaer))",
-          akzent: {
-            DEFAULT: "hsl(var(--ssm-akzent))",
-            hell: "hsl(var(--ssm-akzent-hell))",
-          },
-          cream: "hsl(var(--ssm-cream))",
-          grau: "hsl(var(--ssm-grau))",
-          "status-positiv": {
-            DEFAULT: "hsl(var(--ssm-status-positiv))",
-            bg: "hsl(var(--ssm-status-positiv-bg))",
-          },
-        },
+        'ssm-primaer': '#324642',
+        'ssm-primaer-dark': '#1f2c29',
+        'ssm-sekundaer': '#6A7C76',
+        'ssm-akzent': '#B3B69C',
+        'ssm-akzent-hell': '#d8d9c6',
+        'ssm-cream': '#f5f3ea',
+        'ssm-grau': '#595959',
+        'ssm-status-positiv': '#4F7A5F',
+        'ssm-status-positiv-bg': '#D4E5DC',
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -106,5 +98,7 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-dot": "pulse-dot 2s ease-in-out infinite",
       },
+    },
+  },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
