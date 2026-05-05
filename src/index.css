@@ -53,6 +53,17 @@ All colors MUST be HSL.
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* SSM Corporate Identity */
+    --ssm-primaer: 168 17% 23%;          /* #324642 */
+    --ssm-primaer-dark: 168 18% 14%;     /* #1f2c29 */
+    --ssm-sekundaer: 162 6% 45%;         /* #6A7C76 */
+    --ssm-akzent: 64 16% 66%;            /* #B3B69C */
+    --ssm-akzent-hell: 64 22% 81%;       /* #d8d9c6 */
+    --ssm-cream: 47 41% 94%;             /* #f5f3ea */
+    --ssm-grau: 0 0% 35%;                /* #595959 */
+    --ssm-status-positiv: 138 21% 39%;   /* #4F7A5F */
+    --ssm-status-positiv-bg: 147 31% 86%;/* #D4E5DC */
   }
 
   .dark {
