@@ -9,6 +9,7 @@ import Steps from "@/components/Steps";
 import Testimonials from "@/components/Testimonials";
 import Faq from "@/components/Faq";
 import FinalCta from "@/components/FinalCta";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
@@ -24,6 +25,7 @@ const Index = () => {
       <Testimonials />
       <Faq />
       <FinalCta />
+      <Footer />
     </div>
   );
 };
