@@ -3,6 +3,7 @@ import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import TrustBar from "@/components/TrustBar";
 import Topics from "@/components/Topics";
+import Comparison from "@/components/Comparison";
 
 const Index = () => {
   return (
@@ -12,6 +13,7 @@ const Index = () => {
       <Hero />
       <TrustBar />
       <Topics />
+      <Comparison />
     </div>
   );
 };
