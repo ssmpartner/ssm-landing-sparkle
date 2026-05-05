@@ -24,7 +24,7 @@ const Navigation = () => {
     >
       <div className="mx-auto flex items-center justify-between" style={{ maxWidth: 1180 }}>
         <a href="/" className="flex items-center">
-          <img src="/ssm_logo.svg" alt="SSM Partner AG" style={{ height: 30 }} />
+          <img src="/ssm_logo.svg" alt="SSM Partner AG" style={{ height: 30, marginLeft: -29 }} />
         </a>
 
         <ul
