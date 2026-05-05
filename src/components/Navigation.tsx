@@ -24,16 +24,7 @@ const Navigation = () => {
     >
       <div className="flex items-center justify-between">
         <a href="/" className="flex items-center">
-          <object
-            data="/ssm_logo.svg"
-            type="image/svg+xml"
-            style={{ height: 30, pointerEvents: "none" }}
-            aria-label="SSM Partner AG"
-          >
-            <span className="font-arial font-bold text-black" style={{ fontSize: 28 }}>
-              SSM
-            </span>
-          </object>
+          <img src="/ssm_logo.svg" alt="SSM Partner AG" style={{ height: 30 }} />
         </a>
 
         <ul
