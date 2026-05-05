@@ -116,7 +116,7 @@ const BookingCard = () => {
                   style={{
                     padding: 12,
                     borderRadius: 4,
-                    border: `1.5px solid ${active ? "hsl(var(--ssm-primaer))" : "#d4d2c7"}`,
+                    border: `1.5px solid ${active ? "#324642" : "#d4d2c7"}`,
                     fontSize: 13,
                     textAlign: "center",
                   }}
@@ -139,7 +139,7 @@ const BookingCard = () => {
             onChange={(e) => setName(e.target.value)}
             placeholder="z.B. Maria Mueller"
             style={inputBaseStyle}
-            onFocus={(e) => (e.currentTarget.style.borderColor = "hsl(var(--ssm-sekundaer))")}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "#6A7C76")}
             onBlur={(e) => (e.currentTarget.style.borderColor = "#d4d2c7")}
           />
         </div>
@@ -155,7 +155,7 @@ const BookingCard = () => {
             onChange={(e) => setContact(e.target.value)}
             placeholder="So erreichen wir dich"
             style={inputBaseStyle}
-            onFocus={(e) => (e.currentTarget.style.borderColor = "hsl(var(--ssm-sekundaer))")}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "#6A7C76")}
             onBlur={(e) => (e.currentTarget.style.borderColor = "#d4d2c7")}
           />
         </div>
@@ -169,7 +169,7 @@ const BookingCard = () => {
             value={time}
             onChange={(e) => setTime(e.target.value)}
             style={inputBaseStyle}
-            onFocus={(e) => (e.currentTarget.style.borderColor = "hsl(var(--ssm-sekundaer))")}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "#6A7C76")}
             onBlur={(e) => (e.currentTarget.style.borderColor = "#d4d2c7")}
           >
             {times.map((t) => (
