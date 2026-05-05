@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import TrustBar from "@/components/TrustBar";
 import Topics from "@/components/Topics";
 import Comparison from "@/components/Comparison";
+import Gap from "@/components/Gap";
 
 const Index = () => {
   return (
@@ -14,6 +15,7 @@ const Index = () => {
       <TrustBar />
       <Topics />
       <Comparison />
+      <Gap />
     </div>
   );
 };
