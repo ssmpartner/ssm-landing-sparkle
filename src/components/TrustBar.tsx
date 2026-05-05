@@ -36,8 +36,11 @@ const items: Item[] = [
 const TrustBar = () => {
   return (
     <section
-      className="bg-ssm-cream px-6 py-9 md:px-[50px]"
-      style={{ borderBottom: "1px solid #ebe9e0", padding: undefined }}
+      className="bg-ssm-cream"
+      style={{
+        borderBottom: "1px solid #ebe9e0",
+        padding: "36px 50px",
+      }}
     >
       <div
         className="mx-auto grid grid-cols-2 text-center md:grid-cols-4"
