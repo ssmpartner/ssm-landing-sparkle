@@ -1,6 +1,7 @@
 import Topbar from "@/components/Topbar";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
+import TrustBar from "@/components/TrustBar";
 
 const Index = () => {
   return (
@@ -8,6 +9,7 @@ const Index = () => {
       <Topbar />
       <Navigation />
       <Hero />
+      <TrustBar />
     </div>
   );
 };
