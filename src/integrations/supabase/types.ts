@@ -14,7 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      beratungstermine: {
+        Row: {
+          bevorzugte_zeit: string
+          created_at: string
+          id: string
+          kontakt: string
+          name: string
+          notes: string
+          status: string
+          thema: string
+        }
+        Insert: {
+          bevorzugte_zeit?: string
+          created_at?: string
+          id?: string
+          kontakt: string
+          name: string
+          notes?: string
+          status?: string
+          thema: string
+        }
+        Update: {
+          bevorzugte_zeit?: string
+          created_at?: string
+          id?: string
+          kontakt?: string
+          name?: string
+          notes?: string
+          status?: string
+          thema?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
