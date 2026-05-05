@@ -77,7 +77,6 @@ const Footer = () => {
             style={{
               height: 30,
               display: "block",
-              marginLeft: -29,
               filter: "brightness(0) invert(1)",
             }}
           />
