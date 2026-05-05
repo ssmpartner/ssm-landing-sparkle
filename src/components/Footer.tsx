@@ -80,12 +80,6 @@ const Footer = () => {
             }}
           />
           <div
-            className="font-arial italic text-ssm-akzent"
-            style={{ fontSize: 14, marginTop: 10 }}
-          >
-            Your Value in Life.
-          </div>
-          <div
             className="font-verdana"
             style={{
               fontSize: 13,
