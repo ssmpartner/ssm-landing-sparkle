@@ -14,7 +14,7 @@ const Hero = () => {
       className="relative overflow-hidden px-6 py-[60px] md:px-[50px] md:py-[80px] md:pb-[90px]"
       style={{
         background:
-          "linear-gradient(135deg, hsl(var(--ssm-primaer)) 0%, hsl(var(--ssm-primaer-dark)) 100%)",
+          "linear-gradient(135deg, #324642 0%, #1f2c29 100%)",
       }}
     >
       {/* Glow ::before */}
@@ -23,7 +23,7 @@ const Hero = () => {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at top right, hsl(var(--ssm-akzent) / 0.15), transparent 60%)",
+            "radial-gradient(ellipse at top right, rgba(179,182,156,0.15), transparent 60%)",
         }}
       />
       {/* Stripe ::after */}
