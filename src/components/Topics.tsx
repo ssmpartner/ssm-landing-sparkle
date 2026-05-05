@@ -199,8 +199,7 @@ const Topics = () => {
   return (
     <section
       id="themen"
-      className="bg-ssm-cream"
-      style={{ padding: "60px 24px" }}
+      className="bg-ssm-cream px-6 py-[60px] md:px-[50px] md:py-[90px]"
     >
       <div
         className="mx-auto"
