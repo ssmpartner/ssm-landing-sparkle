@@ -13,12 +13,12 @@ const items: Item[] = [
     Icon: ShieldCheck,
     number: "90",
     em: "%",
-    label: "Lohnabsicherung mit der richtigen 3a-Loesung",
+    label: "Lohnabsicherung mit der richtigen 3a-Lösung",
   },
   {
     Icon: Coins,
     number: "CHF 7'258",
-    label: "Maximaler Saeule-3a-Steuerabzug 2026",
+    label: "Maximaler Säule-3a-Steuerabzug 2026",
   },
   {
     Icon: Calendar,

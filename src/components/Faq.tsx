@@ -5,27 +5,27 @@ type Item = { q: string; a: string };
 const items: Item[] = [
   {
     q: "Ist der Beratungstermin wirklich kostenlos?",
-    a: "Ja. Der 30-Minuten-Termin ist komplett kostenlos und unverbindlich. Du bezahlst nichts und gehst keine Verpflichtung ein. Wir verdienen nur, wenn wir dir wirklich helfen koennen - nicht fuer die Beratung selbst.",
+    a: "Ja. Der 30-Minuten-Termin ist komplett kostenlos und unverbindlich. Du bezahlst nichts und gehst keine Verpflichtung ein. Wir verdienen nur, wenn wir dir wirklich helfen können - nicht für die Beratung selbst.",
   },
   {
     q: "Werde ich danach mit Anrufen bombardiert?",
-    a: "Nein. Wir kontaktieren dich nur fuer die Terminvorbereitung und falls du danach explizit weitere Beratung wuenschst. Kein Newsletter, keine Vertriebsanrufe, kein Lead-Verkauf an Dritte.",
+    a: "Nein. Wir kontaktieren dich nur für die Terminvorbereitung und falls du danach explizit weitere Beratung wünschst. Kein Newsletter, keine Vertriebsanrufe, kein Lead-Verkauf an Dritte.",
   },
   {
-    q: "Wie laeuft der Termin konkret ab?",
-    a: "Du bekommst einen Kalender-Link nach der Reservation. Im Termin selbst sprechen wir 5 Minuten ueber deine Situation, dann zeige ich dir konkrete Zahlen zu Steuern, Vorsorge und (falls relevant) Eigenheim. Am Ende bekommst du eine schriftliche Zusammenfassung per E-Mail.",
+    q: "Wie läuft der Termin konkret ab?",
+    a: "Du bekommst einen Kalender-Link nach der Reservation. Im Termin selbst sprechen wir 5 Minuten über deine Situation, dann zeige ich dir konkrete Zahlen zu Steuern, Vorsorge und (falls relevant) Eigenheim. Am Ende bekommst du eine schriftliche Zusammenfassung per E-Mail.",
   },
   {
-    q: "Was, wenn ich schon eine Saeule 3a habe?",
-    a: "Sehr gut - dann pruefen wir gemeinsam, ob deine bestehende Loesung optimal ist oder ob ein Wechsel zur Versicherungs-Variante mehr Vorteile bringt. In vielen Faellen lohnt sich auch eine Kombination.",
+    q: "Was, wenn ich schon eine Säule 3a habe?",
+    a: "Sehr gut - dann prüfen wir gemeinsam, ob deine bestehende Lösung optimal ist oder ob ein Wechsel zur Versicherungs-Variante mehr Vorteile bringt. In vielen Fällen lohnt sich auch eine Kombination.",
   },
   {
     q: "Was passiert mit meinen Daten?",
-    a: "Alle Daten werden in der Schweiz gespeichert und ausschliesslich fuer die Beratung verwendet. Wir geben sie nicht an Dritte weiter. Du kannst die Loeschung jederzeit per E-Mail an info@ssmpartner.ch beantragen.",
+    a: "Alle Daten werden in der Schweiz gespeichert und ausschliesslich für die Beratung verwendet. Wir geben sie nicht an Dritte weiter. Du kannst die Löschung jederzeit per E-Mail an info@ssmpartner.ch beantragen.",
   },
   {
-    q: "Ist SSM Partner AG serioes?",
-    a: "Ja. SSM Partner AG ist gebundener Vermittler gemaess Versicherungsaufsichtsgesetz (VAG) und im Schweizer Vermittlerregister gefuehrt. MWST-Nummer CHE-488.322.203. Wir arbeiten mit allen grossen Schweizer Versicherern zusammen.",
+    q: "Ist SSM Partner AG seriös?",
+    a: "Ja. SSM Partner AG ist gebundener Vermittler gemäss Versicherungsaufsichtsgesetz (VAG) und im Schweizer Vermittlerregister geführt. MWST-Nummer CHE-488.322.203. Wir arbeiten mit allen grossen Schweizer Versicherern zusammen.",
   },
 ];
 
@@ -46,7 +46,7 @@ const Faq = () => {
           className="font-arial font-bold uppercase text-ssm-sekundaer"
           style={{ fontSize: 13, letterSpacing: "1.5px" }}
         >
-          Haeufige Fragen
+          Häufige Fragen
         </div>
         <h2
           className="font-arial text-ssm-primaer"

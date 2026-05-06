@@ -27,7 +27,7 @@ const bars: Bar[] = [
     width: 50,
     fillBg: "#e8a89e",
     fillTextColor: "#A4503D",
-    fillText: "Luecke: CHF 4'500",
+    fillText: "Lücke: CHF 4'500",
   },
   {
     label: "Mit Versicherungs-3a",
@@ -36,7 +36,7 @@ const bars: Bar[] = [
     width: 90,
     fillBg: "#B3B69C",
     fillTextColor: "#324642",
-    fillText: "Luecke fast geschlossen",
+    fillText: "Lücke fast geschlossen",
   },
 ];
 
@@ -64,7 +64,7 @@ const Gap = () => {
 
   return (
     <section
-      id="luecke"
+      id="lücke"
       className="bg-ssm-primaer px-6 py-[60px] md:px-[50px] md:py-[90px]"
     >
       <div className="mx-auto" style={{ maxWidth: 1180 }}>
@@ -76,7 +76,7 @@ const Gap = () => {
           className="font-arial font-bold uppercase text-ssm-akzent"
           style={{ fontSize: 13, letterSpacing: "1.5px" }}
         >
-          Realitaets-Check IV
+          Realitäts-Check IV
         </div>
         <h2
           className="font-arial text-white"
@@ -95,7 +95,7 @@ const Gap = () => {
             className="text-ssm-akzent"
             style={{ fontStyle: "italic", fontWeight: 400 }}
           >
-            uebrig bleibt.
+            übrig bleibt.
           </em>
         </h2>
         <p
@@ -108,9 +108,9 @@ const Gap = () => {
             color: "rgba(255,255,255,0.8)",
           }}
         >
-          Wenn du als Erwerbstaetige:r invalid wirst, decken IV und
+          Wenn du als Erwerbstätige:r invalid wirst, decken IV und
           Pensionskasse zusammen oft nur einen Teil deines Lohns ab.
-          Hier ist, wie das in Zahlen aussieht - und wie wir die Luecke
+          Hier ist, wie das in Zahlen aussieht - und wie wir die Lücke
           schliessen.
         </p>
 
@@ -174,12 +174,12 @@ const Gap = () => {
               className="font-arial text-white"
               style={{ fontSize: 28, fontWeight: 900, lineHeight: 1.25 }}
             >
-              Die meisten merken die Luecke{" "}
+              Die meisten merken die Lücke{" "}
               <em
                 className="text-ssm-akzent"
                 style={{ fontStyle: "italic", fontWeight: 400 }}
               >
-                erst, wenn es zu spaet ist.
+                erst, wenn es zu spät ist.
               </em>
             </h3>
             <p
@@ -193,8 +193,8 @@ const Gap = () => {
               }}
             >
               Dabei kostet das Schliessen oft weniger als ein
-              Streaming-Abo pro Monat - wenn man frueh anfaengt. Im
-              Beratungstermin rechnen wir deine persoenliche Luecke aus
+              Streaming-Abo pro Monat - wenn man früh anfängt. Im
+              Beratungstermin rechnen wir deine persönliche Lücke aus
               und zeigen dir, wie sie ohne Mehrkosten geschlossen werden
               kann.
             </p>
@@ -207,7 +207,7 @@ const Gap = () => {
                 borderRadius: 4,
               }}
             >
-              Meine Luecke berechnen lassen →
+              Meine Lücke berechnen lassen →
             </a>
           </div>
         </div>

@@ -4,7 +4,7 @@ import { Menu, X, ArrowRight } from "lucide-react";
 const navLinks = [
   "Themen",
   "Bank vs. Versicherung",
-  "Lohn-Luecke",
+  "Lohn-Lücke",
   "So funktioniert's",
   "FAQ",
 ];

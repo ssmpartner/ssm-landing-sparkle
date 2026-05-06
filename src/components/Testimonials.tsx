@@ -11,21 +11,21 @@ const items: Testimonial[] = [
     name: "Markus K.",
     info: "38 · Software-Entwickler · Luzern",
     quote:
-      "Ich habe 12 Jahre lang meine 3a bei der Bank gespart. Beim ersten Termin bei SSM wurde mir gezeigt, dass ich fuer gleiches Geld 4 Vorteile statt 2 haette. Heute weiss ich: meine Familie ist abgesichert, falls etwas passiert.",
+      "Ich habe 12 Jahre lang meine 3a bei der Bank gespart. Beim ersten Termin bei SSM wurde mir gezeigt, dass ich für gleiches Geld 4 Vorteile statt 2 hätte. Heute weiss ich: meine Familie ist abgesichert, falls etwas passiert.",
   },
   {
     initials: "SR",
     name: "Sandra & Reto B.",
     info: "34 / 36 · Familie · Aargau",
     quote:
-      "Wir wollten ein Eigenheim, aber die Amortisationsraten haben uns Sorgen gemacht. SSM hat uns die indirekte Amortisation erklaert - unser Steuersatz ist um CHF 2'400 pro Jahr gesunken. Das hat den Hauskauf erst moeglich gemacht.",
+      "Wir wollten ein Eigenheim, aber die Amortisationsraten haben uns Sorgen gemacht. SSM hat uns die indirekte Amortisation erklärt - unser Steuersatz ist um CHF 2'400 pro Jahr gesunken. Das hat den Hauskauf erst möglich gemacht.",
   },
   {
     initials: "AW",
     name: "Anita W.",
-    info: "52 · Selbstaendig · Zuerich",
+    info: "52 · Selbständig · Zürich",
     quote:
-      "Endlich jemand, der nicht versucht, mir etwas zu verkaufen. Im Termin wurde mir klar, dass meine bisherige Loesung sogar gut war - nur eine kleine Anpassung war noetig. So ehrliche Beratung hatte ich noch nie.",
+      "Endlich jemand, der nicht versucht, mir etwas zu verkaufen. Im Termin wurde mir klar, dass meine bisherige Lösung sogar gut war - nur eine kleine Anpassung war nötig. So ehrliche Beratung hatte ich noch nie.",
   },
 ];
 

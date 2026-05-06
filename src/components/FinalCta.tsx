@@ -40,7 +40,7 @@ const FinalCta = () => {
             className="text-ssm-akzent"
             style={{ fontStyle: "italic", fontWeight: 400 }}
           >
-            Klarheit fuer dein Leben.
+            Klarheit für dein Leben.
           </em>
         </h2>
         <p
