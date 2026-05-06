@@ -81,7 +81,7 @@ const FinalCta = () => {
             oder
           </span>
           <a
-            href="tel:+41220020"
+            href="tel:+41412202050"
             className="inline-flex items-center font-arial font-bold text-white transition-colors hover:bg-white/10"
             style={{
               fontSize: 16,

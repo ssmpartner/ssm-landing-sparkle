@@ -133,7 +133,7 @@ const Footer = () => {
         {/* Spalte 4 */}
         <div>
           <ColTitle>KONTAKT</ColTitle>
-          <FootLink href="tel:+41220020">+41 220 20 50</FootLink>
+          <FootLink href="tel:+41412202050">+41 41 220 20 50</FootLink>
           <FootLink href="mailto:info@ssmpartner.ch">
             info@ssmpartner.ch
           </FootLink>
