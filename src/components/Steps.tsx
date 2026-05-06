@@ -10,14 +10,14 @@ const steps: Step[] = [
     num: "1",
     title: "Termin reservieren",
     text:
-      "Online in 30 Sekunden. Du waehlst Thema und Zeitpunkt. Der Termin findet persoenlich, telefonisch oder per Video statt - wie es dir am besten passt.",
+      "Online in 30 Sekunden. Du wählst Thema und Zeitpunkt. Der Termin findet persönlich, telefonisch oder per Video statt - wie es dir am besten passt.",
     badge: "30 Sekunden",
   },
   {
     num: "2",
     title: "Situation analysieren",
     text:
-      "Wir schauen deine bestehende Vorsorge an, vergleichen Optionen, rechnen Steuerwirkung und Luecken konkret durch - mit deinen echten Zahlen.",
+      "Wir schauen deine bestehende Vorsorge an, vergleichen Optionen, rechnen Steuerwirkung und Lücken konkret durch - mit deinen echten Zahlen.",
     badge: "30 Min. Termin",
   },
   {
@@ -44,7 +44,7 @@ const Steps = () => {
           className="font-arial font-bold uppercase text-ssm-sekundaer"
           style={{ fontSize: 13, letterSpacing: "1.5px" }}
         >
-          So laeuft dein Beratungstermin ab
+          So läuft dein Beratungstermin ab
         </div>
         <h2
           className="font-arial text-ssm-primaer"

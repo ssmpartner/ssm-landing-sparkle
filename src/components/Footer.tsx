@@ -1,11 +1,11 @@
 type LinkItem = { label: string; href: string };
 
 const themen: LinkItem[] = [
-  { label: "Vorsorge & Saeule 3a", href: "#themen" },
+  { label: "Vorsorge & Säule 3a", href: "#themen" },
   { label: "Eigenheim & Hypothek", href: "#themen" },
   { label: "Steuern optimieren", href: "#themen" },
   { label: "Auto-Versicherung", href: "#themen" },
-  { label: "Lohn-Luecke schliessen", href: "#luecke" },
+  { label: "Lohn-Lücke schliessen", href: "#lücke" },
 ];
 
 const unternehmen: LinkItem[] = [
@@ -104,7 +104,7 @@ const Footer = () => {
               marginTop: 12,
             }}
           >
-            Gebundener Vermittler gemaess VAG
+            Gebundener Vermittler gemäss VAG
             <br />
             MWST CHE-488.322.203
           </div>

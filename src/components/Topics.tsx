@@ -23,25 +23,25 @@ const cards: Card[] = [
     number: "01/05",
     title: "Bank vs. Versicherung",
     text:
-      "Beide bieten Saeule 3a. Doch nur die Versicherungs-Loesung schuetzt dich bei Invaliditaet und sichert deine Familie ab - bei gleichem Steuerabzug.",
+      "Beide bieten Säule 3a. Doch nur die Versicherungs-Lösung schützt dich bei Invalidität und sichert deine Familie ab - bei gleichem Steuerabzug.",
     cta: "Vergleich ansehen",
     href: "#vergleich",
   },
   {
     Icon: TrendingDown,
     number: "02/05",
-    title: "Die Lohn-Luecke bei IV",
+    title: "Die Lohn-Lücke bei IV",
     text:
-      "1. und 2. Saeule decken oft nur 40-60% deines Lohns ab. Was bleibt, wenn du krank wirst? Wir schliessen die Luecke auf 90%.",
-    cta: "Luecke verstehen",
-    href: "#luecke",
+      "1. und 2. Säule decken oft nur 40-60% deines Lohns ab. Was bleibt, wenn du krank wirst? Wir schliessen die Lücke auf 90%.",
+    cta: "Lücke verstehen",
+    href: "#lücke",
   },
   {
     Icon: Home,
     number: "03/05",
     title: "Eigenheim ohne Lohn-Loch",
     text:
-      "Indirekte Amortisation: Hypothek bleibt steuerlich abzugsfaehig, Saeule 3a waechst - tausende Franken Steuerersparnis pro Jahr.",
+      "Indirekte Amortisation: Hypothek bleibt steuerlich abzugsfähig, Säule 3a wächst - tausende Franken Steuerersparnis pro Jahr.",
     cta: "Termin buchen",
     href: "#termin",
   },
@@ -59,7 +59,7 @@ const cards: Card[] = [
     number: "05/05",
     title: "Autoversicherung vergleichen",
     text:
-      "Bis zu CHF 600 jaehrliche Differenz bei gleicher Deckung. In 60 Sekunden checken - ohne Spam-Anrufe danach.",
+      "Bis zu CHF 600 jährliche Differenz bei gleicher Deckung. In 60 Sekunden checken - ohne Spam-Anrufe danach.",
     cta: "Termin buchen",
     href: "#termin",
   },
@@ -179,7 +179,7 @@ const SpecialCard = () => (
         color: "rgba(255,255,255,0.8)",
       }}
     >
-      Schreib uns, was dich beschaeftigt. Im Termin gehen wir konkret
+      Schreib uns, was dich beschäftigt. Im Termin gehen wir konkret
       darauf ein - egal ob Pension, Sach- oder Lebensversicherung.
     </p>
     <span
@@ -225,7 +225,7 @@ const Topics = () => {
             marginTop: 14,
           }}
         >
-          Fuenf Bereiche, in denen wir dir{" "}
+          Fünf Bereiche, in denen wir dir{" "}
           <em
             className="text-ssm-sekundaer"
             style={{ fontStyle: "italic", fontWeight: 400 }}
@@ -245,7 +245,7 @@ const Topics = () => {
         >
           Jedes dieser Themen kann im 30-Minuten-Termin individuell auf
           deine Situation angewendet werden. Ohne Verkaufsdruck, ohne
-          Standardloesungen.
+          Standardlösungen.
         </p>
 
         <div

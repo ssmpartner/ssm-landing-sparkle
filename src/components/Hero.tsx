@@ -86,9 +86,9 @@ const Hero = () => {
               marginBottom: 36,
             }}
           >
-            Bank-3a deckt 2 Beduerfnisse. Eine durchdachte
-            Versicherungs-Loesung deckt 4: Altersvorsorge, Steuerabzug,
-            Lohnschutz bei Invaliditaet und Familienabsicherung. Bei
+            Bank-3a deckt 2 Bedürfnisse. Eine durchdachte
+            Versicherungs-Lösung deckt 4: Altersvorsorge, Steuerabzug,
+            Lohnschutz bei Invalidität und Familienabsicherung. Bei
             gleichem Steuerabzug. Wir zeigen dir wie - in einem
             30-Minuten-Termin.
           </p>

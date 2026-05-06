@@ -5,15 +5,15 @@ type Row = { ok: boolean; text: string };
 const bankRows: Row[] = [
   { ok: true, text: "Altersparen mit Verzinsung" },
   { ok: true, text: "Steuerabzug (CHF 7'258 in 2026)" },
-  { ok: false, text: "Kein Schutz bei Invaliditaet" },
+  { ok: false, text: "Kein Schutz bei Invalidität" },
   { ok: false, text: "Keine Familienabsicherung" },
 ];
 
 const versRows: Row[] = [
   { ok: true, text: "Altersparen mit garantiertem Kapital" },
   { ok: true, text: "Steuerabzug (identisch zur Bank)" },
-  { ok: true, text: "Lohnschutz bei Invaliditaet bis 90%" },
-  { ok: true, text: "Todesfallabsicherung fuer die Familie" },
+  { ok: true, text: "Lohnschutz bei Invalidität bis 90%" },
+  { ok: true, text: "Todesfallabsicherung für die Familie" },
 ];
 
 const Pill = ({ ok }: { ok: boolean }) => (
@@ -65,7 +65,7 @@ const Comparison = () => {
           className="font-arial font-bold uppercase text-ssm-sekundaer"
           style={{ fontSize: 13, letterSpacing: "1.5px" }}
         >
-          Saeule 3a · Direkt-Vergleich
+          Säule 3a · Direkt-Vergleich
         </div>
         <h2
           className="font-arial text-ssm-primaer"
@@ -97,7 +97,7 @@ const Comparison = () => {
           }}
         >
           Gleicher Steuerabzug. Gleiches Altersparen. Aber zwei
-          zusaetzliche Bausteine, die zwischen «es geht weiter» und «es
+          zusätzliche Bausteine, die zwischen «es geht weiter» und «es
           geht nicht mehr» entscheiden.
         </p>
 
@@ -119,7 +119,7 @@ const Comparison = () => {
               className="font-arial text-ssm-primaer"
               style={{ fontSize: 24, fontWeight: 900, lineHeight: 1.2 }}
             >
-              Saeule 3a bei der Bank
+              Säule 3a bei der Bank
             </h4>
             <div
               className="font-arial font-bold uppercase text-ssm-grau"
@@ -166,7 +166,7 @@ const Comparison = () => {
               className="font-arial text-ssm-primaer"
               style={{ fontSize: 24, fontWeight: 900, lineHeight: 1.2 }}
             >
-              Saeule 3a bei der Versicherung
+              Säule 3a bei der Versicherung
             </h4>
             <div
               className="font-arial font-bold uppercase text-ssm-sekundaer"
@@ -195,7 +195,7 @@ const Comparison = () => {
                   letterSpacing: "0.5px",
                 }}
               >
-                Meine Loesung berechnen lassen
+                Meine Lösung berechnen lassen
               </a>
             </div>
           </div>

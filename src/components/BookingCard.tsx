@@ -70,7 +70,7 @@ const BookingCard = () => {
     const v = contact.trim();
     if (!v) return "Bitte gib eine E-Mail oder Telefonnummer an.";
     if (!isEmail(v) && !isPhone(v))
-      return "Bitte gueltige E-Mail oder Telefonnummer angeben.";
+      return "Bitte gültige E-Mail oder Telefonnummer angeben.";
     return null;
   }, [contact]);
 
@@ -157,7 +157,7 @@ const BookingCard = () => {
               className="inline-block bg-ssm-status-positiv animate-pulse-dot"
               style={{ width: 6, height: 6, borderRadius: 9999 }}
             />
-            Verfuegbar diese Woche
+            Verfügbar diese Woche
           </div>
 
           <h3
@@ -255,7 +255,7 @@ const BookingCard = () => {
                   e.currentTarget.style.borderColor = "#d4d2c7";
                 }}
                 onFocus={(e) => (e.currentTarget.style.borderColor = "#6A7C76")}
-                placeholder="z.B. Maria Mueller"
+                placeholder="z.B. Maria Müller"
                 style={inputBaseStyle}
               />
               {touched.name && nameError && (
