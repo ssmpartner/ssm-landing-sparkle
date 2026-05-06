@@ -8,9 +8,9 @@ const Topbar = () => {
     >
       <div />
       <div className="flex items-center" style={{ gap: 24 }}>
-        <a href="tel:+41220205000" className="flex items-center" style={{ gap: 6 }}>
+        <a href="tel:+41412202050" className="flex items-center" style={{ gap: 6 }}>
           <Phone size={14} color="white" />
-          <span>+41 220 20 50</span>
+          <span>+41 41 220 20 50</span>
         </a>
         <a href="mailto:info@ssmpartner.ch" className="flex items-center" style={{ gap: 6 }}>
           <Mail size={14} color="white" />
