@@ -104,6 +104,8 @@ const Footer = () => {
               marginTop: 12,
             }}
           >
+            Eine Tochtergesellschaft der Visana-Gruppe
+            <br />
             Gebundener Vermittler gemäss VAG
             <br />
             MWST CHE-488.322.203
