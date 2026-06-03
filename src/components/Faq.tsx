@@ -25,7 +25,7 @@ const items: Item[] = [
   },
   {
     q: "Ist SSM Partner AG seriös?",
-    a: "Ja. SSM Partner AG ist gebundener Vermittler gemäss Versicherungsaufsichtsgesetz (VAG) und im Schweizer Vermittlerregister geführt. MWST-Nummer CHE-488.322.203. Wir arbeiten mit allen grossen Schweizer Versicherern zusammen.",
+    a: "Ja. SSM Partner AG ist eine Tochtergesellschaft der Visana-Gruppe und gebundener Vermittler gemäss Versicherungsaufsichtsgesetz (VAG), im Schweizer Vermittlerregister geführt. MWST-Nummer CHE-488.322.203. Wir arbeiten mit allen grossen Schweizer Versicherern zusammen.",
   },
 ];
 
