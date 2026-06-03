@@ -88,7 +88,7 @@ const Gap = () => {
             marginTop: 14,
           }}
         >
-          9'000 Lohn?
+          5'000 Lohn?
           <br />
           Was wirklich{" "}
           <em
