@@ -13,25 +13,25 @@ type Bar = {
 const bars: Bar[] = [
   {
     label: "Dein heutiger Bruttolohn",
-    amount: "100% · CHF 9'000",
+    amount: "100% · CHF 5'000",
     amountColor: "#B3B69C",
     width: 100,
     fillBg: "#D4E5DC",
     fillTextColor: "#4F7A5F",
-    fillText: "CHF 9'000 / Monat",
+    fillText: "CHF 5'000 / Monat",
   },
   {
     label: "Nur IV + Pensionskasse",
-    amount: "~50% · CHF 4'500",
+    amount: "~50% · CHF 2'500",
     amountColor: "#e8a89e",
     width: 50,
     fillBg: "#e8a89e",
     fillTextColor: "#A4503D",
-    fillText: "Lücke: CHF 4'500",
+    fillText: "Lücke: CHF 2'500",
   },
   {
     label: "Mit Versicherungs-3a",
-    amount: "90% · CHF 8'100",
+    amount: "90% · CHF 4'500",
     amountColor: "#B3B69C",
     width: 90,
     fillBg: "#B3B69C",
@@ -88,7 +88,7 @@ const Gap = () => {
             marginTop: 14,
           }}
         >
-          9'000 Lohn?
+          5'000 Lohn?
           <br />
           Was wirklich{" "}
           <em
