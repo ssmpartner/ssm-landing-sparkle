@@ -86,6 +86,33 @@ export type Database = {
         }
         Relationships: []
       }
+      integrations: {
+        Row: {
+          connected: boolean
+          created_at: string
+          id: string
+          provider: string
+          updated_at: string
+          webhook_token: string
+        }
+        Insert: {
+          connected?: boolean
+          created_at?: string
+          id?: string
+          provider: string
+          updated_at?: string
+          webhook_token?: string
+        }
+        Update: {
+          connected?: boolean
+          created_at?: string
+          id?: string
+          provider?: string
+          updated_at?: string
+          webhook_token?: string
+        }
+        Relationships: []
+      }
       lead_activities: {
         Row: {
           actor: string
