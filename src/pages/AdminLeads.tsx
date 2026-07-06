@@ -848,7 +848,7 @@ const AdminLeads = () => {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   );
                 })}
               </tbody>
