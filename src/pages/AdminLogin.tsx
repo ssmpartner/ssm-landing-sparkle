@@ -19,7 +19,7 @@ const AdminLogin = () => {
   const [searchParams] = useSearchParams();
   const { user, isAdmin, loading, refreshRole } = useAdminAuth();
 
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
