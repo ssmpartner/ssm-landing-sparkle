@@ -1,15 +1,11 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Download,
-  RefreshCw,
-  Save,
-  Search,
-  Trash2,
-  Upload,
-} from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Download, RefreshCw, Search, Trash2, Upload } from "lucide-react";
 import * as XLSX from "xlsx";
 import { supabase } from "@/integrations/supabase/client";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
+import { logLeadActivity } from "@/lib/leadActivity";
+import LeadModal from "@/components/admin/LeadModal";
 
 interface Lead {
   id: string;
@@ -156,6 +152,8 @@ const detectMapping = (headers: string[]): Record<string, number> => {
 
 const AdminLeads = () => {
   const { toast } = useToast();
+  const { user } = useAdminAuth();
+  const actor = user?.email ?? "";
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -164,9 +162,7 @@ const AdminLeads = () => {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("alle");
   const [sourceFilter, setSourceFilter] = useState<string>("alle");
-  const [noteDrafts, setNoteDrafts] = useState<Record<string, string>>({});
-  const [savingNote, setSavingNote] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
@@ -182,9 +178,6 @@ const AdminLeads = () => {
       });
     } else {
       setLeads(data as Lead[]);
-      setNoteDrafts(
-        Object.fromEntries((data as Lead[]).map((l) => [l.id, l.notes ?? ""]))
-      );
     }
     setLoading(false);
   }, [toast]);
@@ -296,6 +289,7 @@ const AdminLeads = () => {
 
   const handleStatusChange = async (id: string, status: string) => {
     const prev = leads;
+    const old = leads.find((l) => l.id === id);
     setLeads((ls) => ls.map((l) => (l.id === id ? { ...l, status } : l)));
     const { error } = await supabase
       .from("leads")
@@ -308,44 +302,18 @@ const AdminLeads = () => {
         description: error.message,
         variant: "destructive",
       });
+      return;
     }
-  };
-
-  const handleSourceChange = async (id: string, quelle: string) => {
-    const prev = leads;
-    setLeads((ls) => ls.map((l) => (l.id === id ? { ...l, quelle } : l)));
-    const { error } = await supabase
-      .from("leads")
-      .update({ quelle })
-      .eq("id", id);
-    if (error) {
-      setLeads(prev);
-      toast({
-        title: "Quelle nicht gespeichert",
-        description: error.message,
-        variant: "destructive",
-      });
+    if (old && old.status !== status) {
+      const labelOf = (v: string) =>
+        STATUS_OPTIONS.find((s) => s.value === v)?.label ?? v;
+      await logLeadActivity(
+        id,
+        actor,
+        "status",
+        `Status: ${labelOf(old.status)} → ${labelOf(status)}`
+      );
     }
-  };
-
-  const handleSaveNote = async (id: string) => {
-    setSavingNote(id);
-    const notes = noteDrafts[id] ?? "";
-    const { error } = await supabase
-      .from("leads")
-      .update({ notes })
-      .eq("id", id);
-    if (error) {
-      toast({
-        title: "Notiz nicht gespeichert",
-        description: error.message,
-        variant: "destructive",
-      });
-    } else {
-      setLeads((ls) => ls.map((l) => (l.id === id ? { ...l, notes } : l)));
-      toast({ title: "Notiz gespeichert" });
-    }
-    setSavingNote(null);
   };
 
   const handleDelete = async (id: string) => {
@@ -596,234 +564,157 @@ const AdminLeads = () => {
                 {filtered.map((lead) => {
                   const c = statusColor(lead.status);
                   const sc = sourceColor(lead.quelle);
-                  const dirty =
-                    (noteDrafts[lead.id] ?? "") !== (lead.notes ?? "");
                   const fullName =
                     `${lead.vorname} ${lead.nachname}`.trim() || "—";
-                  const expanded = expandedId === lead.id;
                   const hasNote = (lead.notes ?? "").trim().length > 0;
                   return (
-                    <Fragment key={lead.id}>
-                      <tr
-                        key={lead.id}
-                        onClick={() =>
-                          setExpandedId(expanded ? null : lead.id)
-                        }
-                        className="cursor-pointer transition-colors hover:bg-ssm-cream/60"
-                        style={{ borderBottom: "1px solid #eef0e2" }}
+                    <tr
+                      key={lead.id}
+                      onClick={() => setSelectedId(lead.id)}
+                      className="cursor-pointer transition-colors hover:bg-ssm-cream/60"
+                      style={{ borderBottom: "1px solid #eef0e2" }}
+                    >
+                      <td
+                        className="font-arial text-ssm-primaer"
+                        style={{ padding: "11px 14px", fontWeight: 700 }}
                       >
-                        <td
-                          className="font-arial text-ssm-primaer"
-                          style={{ padding: "11px 14px", fontWeight: 700 }}
-                        >
-                          {fullName}
-                          {hasNote && (
-                            <span
-                              title="Notiz vorhanden"
-                              style={{ marginLeft: 6, opacity: 0.6 }}
-                            >
-                              📝
-                            </span>
-                          )}
-                        </td>
-                        <td style={{ padding: "11px 14px" }}>
+                        {fullName}
+                        {hasNote && (
                           <span
-                            className="font-arial font-bold uppercase"
-                            style={{
-                              fontSize: 10,
-                              letterSpacing: "0.5px",
-                              padding: "3px 9px",
-                              borderRadius: 999,
-                              background: sc.bg,
-                              color: sc.fg,
-                            }}
+                            title="Notiz vorhanden"
+                            style={{ marginLeft: 6, opacity: 0.6 }}
                           >
-                            {SOURCE_OPTIONS.find((s) => s.value === lead.quelle)
-                              ?.label ?? lead.quelle}
+                            📝
                           </span>
-                        </td>
-                        <td
-                          className="font-verdana text-ssm-grau"
-                          style={{ padding: "11px 14px" }}
-                        >
-                          {lead.email ? (
-                            <a
-                              href={`mailto:${lead.email}`}
-                              onClick={(e) => e.stopPropagation()}
-                              className="text-ssm-primaer underline"
-                            >
-                              {lead.email}
-                            </a>
-                          ) : (
-                            "—"
-                          )}
-                        </td>
-                        <td
-                          className="font-verdana text-ssm-grau"
-                          style={{ padding: "11px 14px", whiteSpace: "nowrap" }}
-                        >
-                          {lead.telefon ? (
-                            <a
-                              href={`tel:${lead.telefon}`}
-                              onClick={(e) => e.stopPropagation()}
-                              className="text-ssm-primaer underline"
-                            >
-                              {lead.telefon}
-                            </a>
-                          ) : (
-                            "—"
-                          )}
-                        </td>
-                        <td
-                          className="font-verdana text-ssm-grau"
-                          style={{ padding: "11px 14px", whiteSpace: "nowrap" }}
-                        >
-                          {(lead.plz || lead.ort)
-                            ? `${lead.plz} ${lead.ort}`.trim()
-                            : "—"}
-                        </td>
-                        <td
-                          style={{ padding: "11px 14px" }}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <select
-                            value={lead.status}
-                            onChange={(e) =>
-                              handleStatusChange(lead.id, e.target.value)
-                            }
-                            title="Status"
-                            className="rounded border font-verdana"
-                            style={{
-                              padding: "5px 8px",
-                              fontSize: 12,
-                              outline: "none",
-                              background: c.bg,
-                              color: c.fg,
-                              borderColor: "transparent",
-                              fontWeight: 700,
-                            }}
-                          >
-                            {STATUS_OPTIONS.map((s) => (
-                              <option
-                                key={s.value}
-                                value={s.value}
-                                style={{ background: "#fff", color: "#333" }}
-                              >
-                                {s.label}
-                              </option>
-                            ))}
-                          </select>
-                        </td>
-                        <td
-                          className="font-verdana text-ssm-grau"
+                        )}
+                      </td>
+                      <td style={{ padding: "11px 14px" }}>
+                        <span
+                          className="font-arial font-bold uppercase"
                           style={{
-                            padding: "11px 14px",
+                            fontSize: 10,
+                            letterSpacing: "0.5px",
+                            padding: "3px 9px",
+                            borderRadius: 999,
+                            background: sc.bg,
+                            color: sc.fg,
+                          }}
+                        >
+                          {SOURCE_OPTIONS.find((s) => s.value === lead.quelle)
+                            ?.label ?? lead.quelle}
+                        </span>
+                      </td>
+                      <td
+                        className="font-verdana text-ssm-grau"
+                        style={{ padding: "11px 14px" }}
+                      >
+                        {lead.email ? (
+                          <a
+                            href={`mailto:${lead.email}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-ssm-primaer underline"
+                          >
+                            {lead.email}
+                          </a>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+                      <td
+                        className="font-verdana text-ssm-grau"
+                        style={{ padding: "11px 14px", whiteSpace: "nowrap" }}
+                      >
+                        {lead.telefon ? (
+                          <a
+                            href={`tel:${lead.telefon}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-ssm-primaer underline"
+                          >
+                            {lead.telefon}
+                          </a>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+                      <td
+                        className="font-verdana text-ssm-grau"
+                        style={{ padding: "11px 14px", whiteSpace: "nowrap" }}
+                      >
+                        {(lead.plz || lead.ort)
+                          ? `${lead.plz} ${lead.ort}`.trim()
+                          : "—"}
+                      </td>
+                      <td
+                        style={{ padding: "11px 14px" }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <select
+                          value={lead.status}
+                          onChange={(e) =>
+                            handleStatusChange(lead.id, e.target.value)
+                          }
+                          title="Status"
+                          className="rounded border font-verdana"
+                          style={{
+                            padding: "5px 8px",
                             fontSize: 12,
-                            whiteSpace: "nowrap",
+                            outline: "none",
+                            background: c.bg,
+                            color: c.fg,
+                            borderColor: "transparent",
+                            fontWeight: 700,
                           }}
                         >
-                          {formatDate(lead.created_at)}
-                        </td>
-                        <td
-                          style={{ padding: "11px 14px", textAlign: "right" }}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <button
-                            onClick={() => handleDelete(lead.id)}
-                            title="Lead löschen"
-                            className="rounded border border-ssm-akzent/60 p-1.5 text-ssm-grau transition-colors hover:border-red-300 hover:text-red-600"
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </td>
-                      </tr>
-                      {expanded && (
-                        <tr
-                          key={`${lead.id}-notes`}
-                          style={{
-                            borderBottom: "1px solid #eef0e2",
-                            background: "#fbfbf5",
-                          }}
-                        >
-                          <td colSpan={8} style={{ padding: "14px 18px" }}>
-                            <div className="flex flex-wrap items-center gap-3">
-                              <span
-                                className="font-verdana text-ssm-grau"
-                                style={{ fontSize: 12 }}
-                              >
-                                Quelle:
-                              </span>
-                              <select
-                                value={lead.quelle}
-                                onChange={(e) =>
-                                  handleSourceChange(lead.id, e.target.value)
-                                }
-                                className="rounded border border-ssm-akzent/60 bg-white font-verdana text-ssm-primaer"
-                                style={{
-                                  padding: "5px 8px",
-                                  fontSize: 12,
-                                  outline: "none",
-                                }}
-                              >
-                                {SOURCE_OPTIONS.map((s) => (
-                                  <option key={s.value} value={s.value}>
-                                    {s.label}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                            <label
-                              className="font-arial font-bold uppercase text-ssm-primaer"
-                              style={{
-                                fontSize: 11,
-                                letterSpacing: "0.6px",
-                                display: "block",
-                                margin: "12px 0 6px",
-                              }}
+                          {STATUS_OPTIONS.map((s) => (
+                            <option
+                              key={s.value}
+                              value={s.value}
+                              style={{ background: "#fff", color: "#333" }}
                             >
-                              Notizen
-                            </label>
-                            <div className="flex flex-col gap-2 sm:flex-row">
-                              <textarea
-                                value={noteDrafts[lead.id] ?? ""}
-                                onChange={(e) =>
-                                  setNoteDrafts((d) => ({
-                                    ...d,
-                                    [lead.id]: e.target.value,
-                                  }))
-                                }
-                                rows={2}
-                                placeholder="Interne Notiz hinzufügen…"
-                                className="flex-1 rounded border border-ssm-akzent/60 bg-white font-verdana"
-                                style={{
-                                  padding: "10px 12px",
-                                  fontSize: 13,
-                                  outline: "none",
-                                  resize: "vertical",
-                                }}
-                              />
-                              <button
-                                onClick={() => handleSaveNote(lead.id)}
-                                disabled={!dirty || savingNote === lead.id}
-                                className="inline-flex items-center justify-center gap-2 self-start rounded bg-ssm-primaer px-4 py-2 font-arial font-bold text-white transition-colors hover:bg-ssm-primaer-dark disabled:opacity-40"
-                                style={{ fontSize: 13 }}
-                              >
-                                <Save size={15} />
-                                {savingNote === lead.id
-                                  ? "Speichert…"
-                                  : "Speichern"}
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </Fragment>
+                              {s.label}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td
+                        className="font-verdana text-ssm-grau"
+                        style={{
+                          padding: "11px 14px",
+                          fontSize: 12,
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {formatDate(lead.created_at)}
+                      </td>
+                      <td
+                        style={{ padding: "11px 14px", textAlign: "right" }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          onClick={() => handleDelete(lead.id)}
+                          title="Lead löschen"
+                          className="rounded border border-ssm-akzent/60 p-1.5 text-ssm-grau transition-colors hover:border-red-300 hover:text-red-600"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </td>
+                    </tr>
                   );
                 })}
               </tbody>
             </table>
           </div>
         )}
+
+      <LeadModal
+        lead={leads.find((l) => l.id === selectedId) ?? null}
+        open={selectedId !== null}
+        onOpenChange={(o) => {
+          if (!o) setSelectedId(null);
+        }}
+        actor={actor}
+        onChanged={fetchLeads}
+      />
     </div>
   );
 };
