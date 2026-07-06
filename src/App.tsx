@@ -7,8 +7,11 @@ import { AdminAuthProvider } from "@/hooks/useAdminAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index.tsx";
 import AdminLogin from "./pages/AdminLogin.tsx";
+import AdminLayout from "@/components/admin/AdminLayout";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
+import AdminTermine from "./pages/AdminTermine.tsx";
 import AdminLeads from "./pages/AdminLeads.tsx";
+import AdminAnfragen from "./pages/AdminAnfragen.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
