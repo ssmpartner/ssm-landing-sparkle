@@ -46,23 +46,12 @@ const AdminLogin = () => {
     setInfo(null);
     setBusy(true);
     try {
-      if (mode === "signup") {
-        const { error: signUpError } = await supabase.auth.signUp({
-          email: email.trim(),
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/admin` },
-        });
-        if (signUpError) throw signUpError;
-      } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password,
-        });
-        if (signInError) throw signInError;
-      }
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (signInError) throw signInError;
 
-      // Try to claim admin (only succeeds for the very first user)
-      await supabase.rpc("claim_admin");
       await refreshRole();
 
       const { data: roleData } = await supabase
@@ -75,7 +64,7 @@ const AdminLogin = () => {
         navigate("/admin", { replace: true });
       } else {
         setInfo(
-          "Konto bereit. Dieses Konto hat noch keine Admin-Berechtigung – bitte von einem bestehenden Admin freischalten lassen."
+          "Dieses Konto hat keine Admin-Berechtigung – bitte von einem bestehenden Admin freischalten lassen."
         );
       }
     } catch (err) {
