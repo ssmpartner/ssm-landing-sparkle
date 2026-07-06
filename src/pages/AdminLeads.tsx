@@ -602,189 +602,257 @@ const AdminLeads = () => {
               : "Keine Leads für diese Filter gefunden."}
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
-            {filtered.map((lead) => {
-              const c = statusColor(lead.status);
-              const sc = sourceColor(lead.quelle);
-              const dirty = (noteDrafts[lead.id] ?? "") !== (lead.notes ?? "");
-              const fullName =
-                `${lead.vorname} ${lead.nachname}`.trim() || "Ohne Namen";
-              return (
-                <div
-                  key={lead.id}
-                  className="rounded-lg border border-ssm-akzent/40 bg-white"
-                  style={{ padding: 20 }}
+          <div className="overflow-x-auto rounded-lg border border-ssm-akzent/40 bg-white">
+            <table className="w-full border-collapse" style={{ fontSize: 13 }}>
+              <thead>
+                <tr
+                  className="font-arial uppercase text-ssm-grau"
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: "0.5px",
+                    borderBottom: "1.5px solid #e4e5d4",
+                  }}
                 >
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h3
+                  <th style={{ padding: "12px 14px", textAlign: "left" }}>Name</th>
+                  <th style={{ padding: "12px 14px", textAlign: "left" }}>Quelle</th>
+                  <th style={{ padding: "12px 14px", textAlign: "left" }}>E-Mail</th>
+                  <th style={{ padding: "12px 14px", textAlign: "left" }}>Telefon</th>
+                  <th style={{ padding: "12px 14px", textAlign: "left" }}>PLZ / Ort</th>
+                  <th style={{ padding: "12px 14px", textAlign: "left" }}>Status</th>
+                  <th style={{ padding: "12px 14px", textAlign: "left" }}>Erstellt</th>
+                  <th style={{ padding: "12px 14px", textAlign: "right" }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((lead) => {
+                  const c = statusColor(lead.status);
+                  const sc = sourceColor(lead.quelle);
+                  const dirty =
+                    (noteDrafts[lead.id] ?? "") !== (lead.notes ?? "");
+                  const fullName =
+                    `${lead.vorname} ${lead.nachname}`.trim() || "—";
+                  const expanded = expandedId === lead.id;
+                  const hasNote = (lead.notes ?? "").trim().length > 0;
+                  return (
+                    <>
+                      <tr
+                        key={lead.id}
+                        onClick={() =>
+                          setExpandedId(expanded ? null : lead.id)
+                        }
+                        className="cursor-pointer transition-colors hover:bg-ssm-cream/60"
+                        style={{ borderBottom: "1px solid #eef0e2" }}
+                      >
+                        <td
                           className="font-arial text-ssm-primaer"
-                          style={{ fontSize: 17, fontWeight: 900 }}
+                          style={{ padding: "11px 14px", fontWeight: 700 }}
                         >
                           {fullName}
-                        </h3>
-                        <span
-                          className="font-arial font-bold uppercase"
-                          style={{
-                            fontSize: 10,
-                            letterSpacing: "0.5px",
-                            padding: "3px 9px",
-                            borderRadius: 999,
-                            background: sc.bg,
-                            color: sc.fg,
-                          }}
+                          {hasNote && (
+                            <span
+                              title="Notiz vorhanden"
+                              style={{ marginLeft: 6, opacity: 0.6 }}
+                            >
+                              📝
+                            </span>
+                          )}
+                        </td>
+                        <td style={{ padding: "11px 14px" }}>
+                          <span
+                            className="font-arial font-bold uppercase"
+                            style={{
+                              fontSize: 10,
+                              letterSpacing: "0.5px",
+                              padding: "3px 9px",
+                              borderRadius: 999,
+                              background: sc.bg,
+                              color: sc.fg,
+                            }}
+                          >
+                            {SOURCE_OPTIONS.find((s) => s.value === lead.quelle)
+                              ?.label ?? lead.quelle}
+                          </span>
+                        </td>
+                        <td
+                          className="font-verdana text-ssm-grau"
+                          style={{ padding: "11px 14px" }}
                         >
-                          {SOURCE_OPTIONS.find((s) => s.value === lead.quelle)
-                            ?.label ?? lead.quelle}
-                        </span>
-                        <span
-                          className="font-arial font-bold uppercase"
-                          style={{
-                            fontSize: 10,
-                            letterSpacing: "0.5px",
-                            padding: "3px 9px",
-                            borderRadius: 999,
-                            background: c.bg,
-                            color: c.fg,
-                          }}
-                        >
-                          {STATUS_OPTIONS.find((s) => s.value === lead.status)
-                            ?.label ?? lead.status}
-                        </span>
-                      </div>
-                      <div
-                        className="font-verdana text-ssm-grau"
-                        style={{ fontSize: 13, marginTop: 6, lineHeight: 1.7 }}
-                      >
-                        {lead.email && (
-                          <div>
-                            <strong>E-Mail:</strong>{" "}
+                          {lead.email ? (
                             <a
                               href={`mailto:${lead.email}`}
+                              onClick={(e) => e.stopPropagation()}
                               className="text-ssm-primaer underline"
                             >
                               {lead.email}
                             </a>
-                          </div>
-                        )}
-                        {lead.telefon && (
-                          <div>
-                            <strong>Telefon:</strong>{" "}
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                        <td
+                          className="font-verdana text-ssm-grau"
+                          style={{ padding: "11px 14px", whiteSpace: "nowrap" }}
+                        >
+                          {lead.telefon ? (
                             <a
                               href={`tel:${lead.telefon}`}
+                              onClick={(e) => e.stopPropagation()}
                               className="text-ssm-primaer underline"
                             >
                               {lead.telefon}
                             </a>
-                          </div>
-                        )}
-                        {(lead.plz || lead.ort) && (
-                          <div>
-                            <strong>Ort:</strong> {lead.plz} {lead.ort}
-                          </div>
-                        )}
-                        <div style={{ fontSize: 12, opacity: 0.8 }}>
-                          Erstellt: {formatDate(lead.created_at)}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <select
-                        value={lead.quelle}
-                        onChange={(e) =>
-                          handleSourceChange(lead.id, e.target.value)
-                        }
-                        title="Quelle"
-                        className="rounded border border-ssm-akzent/60 bg-white font-verdana text-ssm-primaer"
-                        style={{
-                          padding: "8px 10px",
-                          fontSize: 13,
-                          outline: "none",
-                        }}
-                      >
-                        {SOURCE_OPTIONS.map((s) => (
-                          <option key={s.value} value={s.value}>
-                            {s.label}
-                          </option>
-                        ))}
-                      </select>
-                      <select
-                        value={lead.status}
-                        onChange={(e) =>
-                          handleStatusChange(lead.id, e.target.value)
-                        }
-                        title="Status"
-                        className="rounded border border-ssm-akzent/60 bg-white font-verdana text-ssm-primaer"
-                        style={{
-                          padding: "8px 10px",
-                          fontSize: 13,
-                          outline: "none",
-                        }}
-                      >
-                        {STATUS_OPTIONS.map((s) => (
-                          <option key={s.value} value={s.value}>
-                            {s.label}
-                          </option>
-                        ))}
-                      </select>
-                      <button
-                        onClick={() => handleDelete(lead.id)}
-                        title="Lead löschen"
-                        className="rounded border border-ssm-akzent/60 p-2 text-ssm-grau transition-colors hover:border-red-300 hover:text-red-600"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Notes */}
-                  <div style={{ marginTop: 14 }}>
-                    <label
-                      className="font-arial font-bold uppercase text-ssm-primaer"
-                      style={{
-                        fontSize: 11,
-                        letterSpacing: "0.6px",
-                        display: "block",
-                        marginBottom: 6,
-                      }}
-                    >
-                      Notizen
-                    </label>
-                    <div className="flex flex-col gap-2 sm:flex-row">
-                      <textarea
-                        value={noteDrafts[lead.id] ?? ""}
-                        onChange={(e) =>
-                          setNoteDrafts((d) => ({
-                            ...d,
-                            [lead.id]: e.target.value,
-                          }))
-                        }
-                        rows={2}
-                        placeholder="Interne Notiz hinzufügen…"
-                        className="flex-1 rounded border border-ssm-akzent/60 bg-white font-verdana"
-                        style={{
-                          padding: "10px 12px",
-                          fontSize: 13,
-                          outline: "none",
-                          resize: "vertical",
-                        }}
-                      />
-                      <button
-                        onClick={() => handleSaveNote(lead.id)}
-                        disabled={!dirty || savingNote === lead.id}
-                        className="inline-flex items-center justify-center gap-2 self-start rounded bg-ssm-primaer px-4 py-2 font-arial font-bold text-white transition-colors hover:bg-ssm-primaer-dark disabled:opacity-40"
-                        style={{ fontSize: 13 }}
-                      >
-                        <Save size={15} />
-                        {savingNote === lead.id ? "Speichert…" : "Speichern"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                        <td
+                          className="font-verdana text-ssm-grau"
+                          style={{ padding: "11px 14px", whiteSpace: "nowrap" }}
+                        >
+                          {(lead.plz || lead.ort)
+                            ? `${lead.plz} ${lead.ort}`.trim()
+                            : "—"}
+                        </td>
+                        <td
+                          style={{ padding: "11px 14px" }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <select
+                            value={lead.status}
+                            onChange={(e) =>
+                              handleStatusChange(lead.id, e.target.value)
+                            }
+                            title="Status"
+                            className="rounded border font-verdana"
+                            style={{
+                              padding: "5px 8px",
+                              fontSize: 12,
+                              outline: "none",
+                              background: c.bg,
+                              color: c.fg,
+                              borderColor: "transparent",
+                              fontWeight: 700,
+                            }}
+                          >
+                            {STATUS_OPTIONS.map((s) => (
+                              <option
+                                key={s.value}
+                                value={s.value}
+                                style={{ background: "#fff", color: "#333" }}
+                              >
+                                {s.label}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td
+                          className="font-verdana text-ssm-grau"
+                          style={{
+                            padding: "11px 14px",
+                            fontSize: 12,
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {formatDate(lead.created_at)}
+                        </td>
+                        <td
+                          style={{ padding: "11px 14px", textAlign: "right" }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            onClick={() => handleDelete(lead.id)}
+                            title="Lead löschen"
+                            className="rounded border border-ssm-akzent/60 p-1.5 text-ssm-grau transition-colors hover:border-red-300 hover:text-red-600"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </td>
+                      </tr>
+                      {expanded && (
+                        <tr
+                          key={`${lead.id}-notes`}
+                          style={{
+                            borderBottom: "1px solid #eef0e2",
+                            background: "#fbfbf5",
+                          }}
+                        >
+                          <td colSpan={8} style={{ padding: "14px 18px" }}>
+                            <div className="flex flex-wrap items-center gap-3">
+                              <span
+                                className="font-verdana text-ssm-grau"
+                                style={{ fontSize: 12 }}
+                              >
+                                Quelle:
+                              </span>
+                              <select
+                                value={lead.quelle}
+                                onChange={(e) =>
+                                  handleSourceChange(lead.id, e.target.value)
+                                }
+                                className="rounded border border-ssm-akzent/60 bg-white font-verdana text-ssm-primaer"
+                                style={{
+                                  padding: "5px 8px",
+                                  fontSize: 12,
+                                  outline: "none",
+                                }}
+                              >
+                                {SOURCE_OPTIONS.map((s) => (
+                                  <option key={s.value} value={s.value}>
+                                    {s.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <label
+                              className="font-arial font-bold uppercase text-ssm-primaer"
+                              style={{
+                                fontSize: 11,
+                                letterSpacing: "0.6px",
+                                display: "block",
+                                margin: "12px 0 6px",
+                              }}
+                            >
+                              Notizen
+                            </label>
+                            <div className="flex flex-col gap-2 sm:flex-row">
+                              <textarea
+                                value={noteDrafts[lead.id] ?? ""}
+                                onChange={(e) =>
+                                  setNoteDrafts((d) => ({
+                                    ...d,
+                                    [lead.id]: e.target.value,
+                                  }))
+                                }
+                                rows={2}
+                                placeholder="Interne Notiz hinzufügen…"
+                                className="flex-1 rounded border border-ssm-akzent/60 bg-white font-verdana"
+                                style={{
+                                  padding: "10px 12px",
+                                  fontSize: 13,
+                                  outline: "none",
+                                  resize: "vertical",
+                                }}
+                              />
+                              <button
+                                onClick={() => handleSaveNote(lead.id)}
+                                disabled={!dirty || savingNote === lead.id}
+                                className="inline-flex items-center justify-center gap-2 self-start rounded bg-ssm-primaer px-4 py-2 font-arial font-bold text-white transition-colors hover:bg-ssm-primaer-dark disabled:opacity-40"
+                                style={{ fontSize: 13 }}
+                              >
+                                <Save size={15} />
+                                {savingNote === lead.id
+                                  ? "Speichert…"
+                                  : "Speichern"}
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </main>
