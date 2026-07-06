@@ -198,28 +198,9 @@ const AdminLogin = () => {
               marginTop: 6,
             }}
           >
-            {busy
-              ? "Bitte warten…"
-              : mode === "login"
-                ? "Anmelden"
-                : "Konto erstellen"}
+            {busy ? "Bitte warten…" : "Anmelden"}
           </button>
         </form>
-
-        <button
-          type="button"
-          onClick={() => {
-            setMode((m) => (m === "login" ? "signup" : "login"));
-            setError(null);
-            setInfo(null);
-          }}
-          className="font-verdana text-ssm-sekundaer hover:text-ssm-primaer"
-          style={{ fontSize: 13, marginTop: 18, textAlign: "center", width: "100%" }}
-        >
-          {mode === "login"
-            ? "Noch kein Konto? Registrieren"
-            : "Bereits ein Konto? Anmelden"}
-        </button>
       </div>
     </div>
   );
