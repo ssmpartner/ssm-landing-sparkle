@@ -26,6 +26,10 @@ const items = [
   { title: "Anfragen", url: "/admin/anfragen", icon: Inbox },
 ];
 
+const settingsItems = [
+  { title: "Integrationen", url: "/admin/integrationen", icon: Plug },
+];
+
 export function AdminSidebar() {
   const { pathname } = useLocation();
 
