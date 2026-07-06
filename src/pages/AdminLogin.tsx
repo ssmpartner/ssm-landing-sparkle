@@ -19,7 +19,7 @@ const AdminLogin = () => {
   const [searchParams] = useSearchParams();
   const { user, isAdmin, loading, refreshRole } = useAdminAuth();
 
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -46,23 +46,12 @@ const AdminLogin = () => {
     setInfo(null);
     setBusy(true);
     try {
-      if (mode === "signup") {
-        const { error: signUpError } = await supabase.auth.signUp({
-          email: email.trim(),
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/admin` },
-        });
-        if (signUpError) throw signUpError;
-      } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password,
-        });
-        if (signInError) throw signInError;
-      }
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (signInError) throw signInError;
 
-      // Try to claim admin (only succeeds for the very first user)
-      await supabase.rpc("claim_admin");
       await refreshRole();
 
       const { data: roleData } = await supabase
@@ -75,7 +64,7 @@ const AdminLogin = () => {
         navigate("/admin", { replace: true });
       } else {
         setInfo(
-          "Konto bereit. Dieses Konto hat noch keine Admin-Berechtigung – bitte von einem bestehenden Admin freischalten lassen."
+          "Dieses Konto hat keine Admin-Berechtigung – bitte von einem bestehenden Admin freischalten lassen."
         );
       }
     } catch (err) {
@@ -116,9 +105,7 @@ const AdminLogin = () => {
           className="font-verdana text-ssm-grau"
           style={{ fontSize: 14, marginTop: 8 }}
         >
-          {mode === "login"
-            ? "Melde dich an, um eingehende Leads zu verwalten."
-            : "Erstelle ein Admin-Konto."}
+          Melde dich an, um eingehende Leads zu verwalten.
         </p>
 
         {error && (
@@ -211,28 +198,9 @@ const AdminLogin = () => {
               marginTop: 6,
             }}
           >
-            {busy
-              ? "Bitte warten…"
-              : mode === "login"
-                ? "Anmelden"
-                : "Konto erstellen"}
+            {busy ? "Bitte warten…" : "Anmelden"}
           </button>
         </form>
-
-        <button
-          type="button"
-          onClick={() => {
-            setMode((m) => (m === "login" ? "signup" : "login"));
-            setError(null);
-            setInfo(null);
-          }}
-          className="font-verdana text-ssm-sekundaer hover:text-ssm-primaer"
-          style={{ fontSize: 13, marginTop: 18, textAlign: "center", width: "100%" }}
-        >
-          {mode === "login"
-            ? "Noch kein Konto? Registrieren"
-            : "Bereits ein Konto? Anmelden"}
-        </button>
       </div>
     </div>
   );
