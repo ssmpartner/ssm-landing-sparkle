@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard.tsx";
 import AdminTermine from "./pages/AdminTermine.tsx";
 import AdminLeads from "./pages/AdminLeads.tsx";
 import AdminAnfragen from "./pages/AdminAnfragen.tsx";
+import AdminIntegrations from "./pages/AdminIntegrations.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
               <Route path="termine" element={<AdminTermine />} />
               <Route path="leads" element={<AdminLeads />} />
               <Route path="anfragen" element={<AdminAnfragen />} />
+              <Route path="integrationen" element={<AdminIntegrations />} />
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
