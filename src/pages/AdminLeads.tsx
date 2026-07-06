@@ -1,9 +1,6 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import {
-  ArrowLeft,
   Download,
-  LogOut,
   RefreshCw,
   Save,
   Search,
@@ -12,7 +9,6 @@ import {
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import { supabase } from "@/integrations/supabase/client";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
 
 interface Lead {
@@ -159,8 +155,6 @@ const detectMapping = (headers: string[]): Record<string, number> => {
 };
 
 const AdminLeads = () => {
-  const navigate = useNavigate();
-  const { user, signOut } = useAdminAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -371,10 +365,8 @@ const AdminLeads = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await signOut();
-    navigate("/admin/login", { replace: true });
-  };
+
+
 
   const filtered = useMemo(() => {
     return leads.filter((l) => {
@@ -443,82 +435,59 @@ const AdminLeads = () => {
   };
 
   return (
-    <div className="min-h-screen bg-ssm-cream">
-      {/* Header */}
-      <header className="border-b border-ssm-akzent/40 bg-white">
-        <div
-          className="mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-4"
-          style={{ maxWidth: 1280 }}
-        >
-          <div>
-            <div className="flex items-center gap-3">
-              <Link
-                to="/admin"
-                className="inline-flex items-center gap-1 font-verdana text-ssm-grau transition-colors hover:text-ssm-primaer"
-                style={{ fontSize: 12 }}
-              >
-                <ArrowLeft size={14} /> Termine
-              </Link>
-            </div>
-            <h1
-              className="font-arial text-ssm-primaer"
-              style={{ fontSize: 22, fontWeight: 900, marginTop: 2 }}
-            >
-              Leads · Import
-            </h1>
-            <p
-              className="font-verdana text-ssm-grau"
-              style={{ fontSize: 12, marginTop: 2 }}
-            >
-              {user?.email}
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".xlsx,.xls,.csv"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) handleFile(f);
-              }}
-            />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={importing}
-              className="inline-flex items-center gap-2 rounded bg-ssm-primaer px-3 py-2 font-arial font-bold text-white transition-colors hover:bg-ssm-primaer-dark disabled:opacity-50"
-              style={{ fontSize: 13 }}
-            >
-              <Upload size={15} />
-              {importing ? "Importiert…" : "Excel importieren"}
-            </button>
-            <button
-              onClick={fetchLeads}
-              className="inline-flex items-center gap-2 rounded border border-ssm-akzent/60 px-3 py-2 font-arial text-ssm-primaer transition-colors hover:bg-ssm-cream"
-              style={{ fontSize: 13 }}
-            >
-              <RefreshCw size={15} /> Aktualisieren
-            </button>
-            <button
-              onClick={exportCsv}
-              className="inline-flex items-center gap-2 rounded border border-ssm-akzent/60 px-3 py-2 font-arial text-ssm-primaer transition-colors hover:bg-ssm-cream"
-              style={{ fontSize: 13 }}
-            >
-              <Download size={15} /> CSV
-            </button>
-            <button
-              onClick={handleLogout}
-              className="inline-flex items-center gap-2 rounded border border-ssm-akzent/60 px-3 py-2 font-arial text-ssm-grau transition-colors hover:bg-ssm-cream"
-              style={{ fontSize: 13 }}
-            >
-              <LogOut size={15} /> Abmelden
-            </button>
-          </div>
+    <div className="mx-auto px-6 py-8" style={{ maxWidth: 1280 }}>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".xlsx,.xls,.csv"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) handleFile(f);
+        }}
+      />
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1
+            className="font-arial text-ssm-primaer"
+            style={{ fontSize: 24, fontWeight: 900 }}
+          >
+            Kampagnen Leads
+          </h1>
+          <p
+            className="font-verdana text-ssm-grau"
+            style={{ fontSize: 13, marginTop: 4 }}
+          >
+            Importierte Leads aus TikTok, Meta und Landingpage.
+          </p>
         </div>
-      </header>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={importing}
+            className="inline-flex items-center gap-2 rounded bg-ssm-primaer px-3 py-2 font-arial font-bold text-white transition-colors hover:bg-ssm-primaer-dark disabled:opacity-50"
+            style={{ fontSize: 13 }}
+          >
+            <Upload size={15} />
+            {importing ? "Importiert…" : "Excel importieren"}
+          </button>
+          <button
+            onClick={fetchLeads}
+            className="inline-flex items-center gap-2 rounded border border-ssm-akzent/60 px-3 py-2 font-arial text-ssm-primaer transition-colors hover:bg-ssm-cream"
+            style={{ fontSize: 13 }}
+          >
+            <RefreshCw size={15} /> Aktualisieren
+          </button>
+          <button
+            onClick={exportCsv}
+            className="inline-flex items-center gap-2 rounded border border-ssm-akzent/60 px-3 py-2 font-arial text-ssm-primaer transition-colors hover:bg-ssm-cream"
+            style={{ fontSize: 13 }}
+          >
+            <Download size={15} /> CSV
+          </button>
+        </div>
+      </div>
 
-      <main className="mx-auto px-6 py-8" style={{ maxWidth: 1280 }}>
         {/* Import hint */}
         <div
           className="mb-6 rounded-lg border border-dashed border-ssm-akzent/60 bg-white font-verdana text-ssm-grau"
@@ -855,7 +824,6 @@ const AdminLeads = () => {
             </table>
           </div>
         )}
-      </main>
     </div>
   );
 };
