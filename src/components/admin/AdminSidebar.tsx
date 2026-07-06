@@ -4,6 +4,8 @@ import {
   CalendarDays,
   Megaphone,
   Inbox,
+  Settings,
+  Plug,
 } from "lucide-react";
 import {
   Sidebar,
