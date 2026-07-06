@@ -155,8 +155,6 @@ const detectMapping = (headers: string[]): Record<string, number> => {
 };
 
 const AdminLeads = () => {
-  const navigate = useNavigate();
-  const { user, signOut } = useAdminAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
