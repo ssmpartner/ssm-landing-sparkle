@@ -86,6 +86,41 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_activities: {
+        Row: {
+          actor: string
+          created_at: string
+          description: string
+          id: string
+          lead_id: string
+          type: string
+        }
+        Insert: {
+          actor?: string
+          created_at?: string
+          description?: string
+          id?: string
+          lead_id: string
+          type?: string
+        }
+        Update: {
+          actor?: string
+          created_at?: string
+          description?: string
+          id?: string
+          lead_id?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           created_at: string
