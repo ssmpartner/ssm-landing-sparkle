@@ -365,10 +365,8 @@ const AdminLeads = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await signOut();
-    navigate("/admin/login", { replace: true });
-  };
+
+
 
   const filtered = useMemo(() => {
     return leads.filter((l) => {
