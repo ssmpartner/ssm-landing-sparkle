@@ -30,18 +30,15 @@ const App = () => (
               path="/admin"
               element={
                 <ProtectedRoute>
-                  <AdminDashboard />
+                  <AdminLayout />
                 </ProtectedRoute>
               }
-            />
-            <Route
-              path="/admin/leads"
-              element={
-                <ProtectedRoute>
-                  <AdminLeads />
-                </ProtectedRoute>
-              }
-            />
+            >
+              <Route index element={<AdminDashboard />} />
+              <Route path="termine" element={<AdminTermine />} />
+              <Route path="leads" element={<AdminLeads />} />
+              <Route path="anfragen" element={<AdminAnfragen />} />
+            </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
