@@ -634,7 +634,7 @@ const AdminLeads = () => {
                   const expanded = expandedId === lead.id;
                   const hasNote = (lead.notes ?? "").trim().length > 0;
                   return (
-                    <>
+                    <Fragment key={lead.id}>
                       <tr
                         key={lead.id}
                         onClick={() =>
