@@ -824,7 +824,6 @@ const AdminLeads = () => {
             </table>
           </div>
         )}
-      </main>
     </div>
   );
 };
