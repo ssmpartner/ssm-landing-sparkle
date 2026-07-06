@@ -172,6 +172,7 @@ const AdminLeads = () => {
   const [sourceFilter, setSourceFilter] = useState<string>("alle");
   const [noteDrafts, setNoteDrafts] = useState<Record<string, string>>({});
   const [savingNote, setSavingNote] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
