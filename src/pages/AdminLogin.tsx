@@ -105,9 +105,7 @@ const AdminLogin = () => {
           className="font-verdana text-ssm-grau"
           style={{ fontSize: 14, marginTop: 8 }}
         >
-          {mode === "login"
-            ? "Melde dich an, um eingehende Leads zu verwalten."
-            : "Erstelle ein Admin-Konto."}
+          Melde dich an, um eingehende Leads zu verwalten.
         </p>
 
         {error && (
