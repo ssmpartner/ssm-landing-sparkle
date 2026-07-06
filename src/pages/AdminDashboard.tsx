@@ -242,6 +242,13 @@ const AdminDashboard = () => {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <Link
+              to="/admin/leads"
+              className="inline-flex items-center gap-2 rounded border border-ssm-akzent/60 px-3 py-2 font-arial font-bold text-ssm-primaer transition-colors hover:bg-ssm-cream"
+              style={{ fontSize: 13 }}
+            >
+              Leads / Import
+            </Link>
             <button
               onClick={fetchLeads}
               className="inline-flex items-center gap-2 rounded border border-ssm-akzent/60 px-3 py-2 font-arial text-ssm-primaer transition-colors hover:bg-ssm-cream"
