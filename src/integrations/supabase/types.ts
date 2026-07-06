@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      anfragen: {
+        Row: {
+          betreff: string
+          created_at: string
+          email: string
+          id: string
+          nachricht: string
+          name: string
+          notes: string
+          status: string
+          telefon: string
+          updated_at: string
+        }
+        Insert: {
+          betreff?: string
+          created_at?: string
+          email?: string
+          id?: string
+          nachricht?: string
+          name?: string
+          notes?: string
+          status?: string
+          telefon?: string
+          updated_at?: string
+        }
+        Update: {
+          betreff?: string
+          created_at?: string
+          email?: string
+          id?: string
+          nachricht?: string
+          name?: string
+          notes?: string
+          status?: string
+          telefon?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       beratungstermine: {
         Row: {
           bevorzugte_zeit: string
