@@ -35,21 +35,28 @@ const FootLink = ({
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
-}) => (
-  <a
-    href={href}
-    className={`block font-verdana transition-colors hover:text-ssm-akzent ${className}`}
-    style={{
-      fontSize: 13,
-      color: "rgba(255,255,255,0.7)",
-      paddingTop: 6,
-      paddingBottom: 6,
-      ...style,
-    }}
-  >
-    {children}
-  </a>
-);
+}) => {
+  const isExternal = /^https?:\/\//.test(href);
+  return (
+    <a
+      href={href}
+      {...(isExternal
+        ? { target: "_blank", rel: "noopener noreferrer" }
+        : {})}
+      className={`block font-verdana transition-colors hover:text-ssm-akzent ${className}`}
+      style={{
+        fontSize: 13,
+        color: "rgba(255,255,255,0.7)",
+        paddingTop: 6,
+        paddingBottom: 6,
+        ...style,
+      }}
+    >
+      {children}
+    </a>
+  );
+};
+
 
 const Footer = () => {
   return (
