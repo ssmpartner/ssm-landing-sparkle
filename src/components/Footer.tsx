@@ -9,10 +9,11 @@ const themen: LinkItem[] = [
 ];
 
 const unternehmen: LinkItem[] = [
-  { label: "Ueber uns", href: "#" },
-  { label: "Team", href: "#" },
-  { label: "Karriere", href: "#" },
-  { label: "Standorte", href: "#" },
+  { label: "Ueber uns", href: "https://ssmpartner.ch/ueber-uns" },
+  { label: "Team", href: "https://ssmpartner.ch/ueber-uns" },
+  { label: "Karriere", href: "https://ssmpartner.ch/karriere" },
+  { label: "Standorte", href: "https://ssmpartner.ch/agenturen" },
+
 ];
 
 const ColTitle = ({ children }: { children: React.ReactNode }) => (
