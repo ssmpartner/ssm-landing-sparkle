@@ -9,10 +9,11 @@ const themen: LinkItem[] = [
 ];
 
 const unternehmen: LinkItem[] = [
-  { label: "Ueber uns", href: "#" },
-  { label: "Team", href: "#" },
-  { label: "Karriere", href: "#" },
-  { label: "Standorte", href: "#" },
+  { label: "Ueber uns", href: "https://ssmpartner.ch/ueber-uns" },
+  { label: "Team", href: "https://ssmpartner.ch/ueber-uns" },
+  { label: "Karriere", href: "https://ssmpartner.ch/karriere" },
+  { label: "Standorte", href: "https://ssmpartner.ch/agenturen" },
+
 ];
 
 const ColTitle = ({ children }: { children: React.ReactNode }) => (
@@ -34,21 +35,28 @@ const FootLink = ({
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
-}) => (
-  <a
-    href={href}
-    className={`block font-verdana transition-colors hover:text-ssm-akzent ${className}`}
-    style={{
-      fontSize: 13,
-      color: "rgba(255,255,255,0.7)",
-      paddingTop: 6,
-      paddingBottom: 6,
-      ...style,
-    }}
-  >
-    {children}
-  </a>
-);
+}) => {
+  const isExternal = /^https?:\/\//.test(href);
+  return (
+    <a
+      href={href}
+      {...(isExternal
+        ? { target: "_blank", rel: "noopener noreferrer" }
+        : {})}
+      className={`block font-verdana transition-colors hover:text-ssm-akzent ${className}`}
+      style={{
+        fontSize: 13,
+        color: "rgba(255,255,255,0.7)",
+        paddingTop: 6,
+        paddingBottom: 6,
+        ...style,
+      }}
+    >
+      {children}
+    </a>
+  );
+};
+
 
 const Footer = () => {
   return (
@@ -167,12 +175,33 @@ const Footer = () => {
           © 2026 SSM Partner AG · Alle Rechte vorbehalten
         </div>
         <div
-          className="font-arial"
+          className="font-arial flex flex-wrap items-center gap-x-2 gap-y-1"
           style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}
         >
-          Datenschutz · Impressum · AGB · Cookie-Einstellungen
+          {[
+            { label: "Datenschutz", href: "https://ssmpartner.ch/rechtliches" },
+            { label: "Impressum", href: "https://ssmpartner.ch/rechtliches" },
+            { label: "AGB", href: "https://ssmpartner.ch/rechtliches" },
+            {
+              label: "Cookie-Einstellungen",
+              href: "https://ssmpartner.ch/rechtliches",
+            },
+          ].map((item, i, arr) => (
+            <span key={item.label} className="flex items-center gap-x-2">
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-ssm-akzent"
+              >
+                {item.label}
+              </a>
+              {i < arr.length - 1 && <span aria-hidden="true">·</span>}
+            </span>
+          ))}
         </div>
       </div>
+
     </footer>
   );
 };
