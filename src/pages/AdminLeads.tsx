@@ -262,19 +262,71 @@ const AdminLeads = () => {
         return;
       }
 
-      const { error } = await supabase.from("leads").insert(records);
-      if (error) {
+      // Deduplication: match by email (case-insensitive) or normalized phone
+      const normEmail = (v: string) => v.trim().toLowerCase();
+      const normPhone = (v: string) => v.replace(/[^\d+]/g, "").replace(/^00/, "+");
+
+      const { data: existing, error: fetchErr } = await supabase
+        .from("leads")
+        .select("email, telefon");
+      if (fetchErr) {
         toast({
           title: "Import fehlgeschlagen",
-          description: error.message,
+          description: fetchErr.message,
           variant: "destructive",
         });
-      } else {
+        setImporting(false);
+        return;
+      }
+
+      const existingEmails = new Set<string>();
+      const existingPhones = new Set<string>();
+      (existing ?? []).forEach((r) => {
+        if (r.email) existingEmails.add(normEmail(r.email));
+        if (r.telefon) {
+          const p = normPhone(r.telefon);
+          if (p) existingPhones.add(p);
+        }
+      });
+
+      const seenEmails = new Set<string>();
+      const seenPhones = new Set<string>();
+      let duplicates = 0;
+      const toInsert = records.filter((r) => {
+        const e = r.email ? normEmail(r.email) : "";
+        const p = r.telefon ? normPhone(r.telefon) : "";
+        const isDup =
+          (e && (existingEmails.has(e) || seenEmails.has(e))) ||
+          (p && (existingPhones.has(p) || seenPhones.has(p)));
+        if (isDup) {
+          duplicates++;
+          return false;
+        }
+        if (e) seenEmails.add(e);
+        if (p) seenPhones.add(p);
+        return true;
+      });
+
+      if (toInsert.length === 0) {
         toast({
-          title: "Import erfolgreich",
-          description: `${records.length} Leads wurden importiert.`,
+          title: "Nichts zu importieren",
+          description: `Alle ${records.length} Zeilen sind bereits vorhanden (E-Mail/Telefon).`,
         });
-        await fetchLeads();
+      } else {
+        const { error } = await supabase.from("leads").insert(toInsert);
+        if (error) {
+          toast({
+            title: "Import fehlgeschlagen",
+            description: error.message,
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Import erfolgreich",
+            description: `${toInsert.length} neu hinzugefügt, ${duplicates} Duplikate übersprungen.`,
+          });
+          await fetchLeads();
+        }
       }
     } catch (e) {
       toast({
