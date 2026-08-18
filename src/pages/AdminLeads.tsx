@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Download, RefreshCw, Search, Trash2, Upload } from "lucide-react";
+import { Copy, Download, Lock, LockOpen, RefreshCw, Search, Trash2, Upload } from "lucide-react";
 import * as XLSX from "xlsx";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
@@ -19,6 +19,8 @@ interface Lead {
   ort: string;
   status: string;
   notes: string;
+  gesperrt: boolean;
+  sperrgrund: string;
 }
 
 const STATUS_OPTIONS = [
@@ -163,6 +165,8 @@ const AdminLeads = () => {
   const [statusFilter, setStatusFilter] = useState<string>("alle");
   const [sourceFilter, setSourceFilter] = useState<string>("alle");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [onlyDuplicates, setOnlyDuplicates] = useState(false);
+  const [hideBlocked, setHideBlocked] = useState(false);
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
@@ -388,6 +392,70 @@ const AdminLeads = () => {
 
 
 
+  const normEmailKey = (v: string) => (v ?? "").trim().toLowerCase();
+  const normPhoneKey = (v: string) =>
+    (v ?? "").replace(/[^\d+]/g, "").replace(/^00/, "+");
+
+  // Leads whose e-mail or phone number occurs more than once.
+  const duplicateIds = useMemo(() => {
+    const byEmail = new Map<string, string[]>();
+    const byPhone = new Map<string, string[]>();
+    for (const l of leads) {
+      const e = normEmailKey(l.email);
+      const p = normPhoneKey(l.telefon);
+      if (e) byEmail.set(e, [...(byEmail.get(e) ?? []), l.id]);
+      if (p) byPhone.set(p, [...(byPhone.get(p) ?? []), l.id]);
+    }
+    const ids = new Set<string>();
+    for (const group of [...byEmail.values(), ...byPhone.values()]) {
+      if (group.length > 1) group.forEach((id) => ids.add(id));
+    }
+    return ids;
+  }, [leads]);
+
+  const handleToggleBlock = async (id: string) => {
+    const lead = leads.find((l) => l.id === id);
+    if (!lead) return;
+    const next = !lead.gesperrt;
+    let grund = lead.sperrgrund ?? "";
+    if (next) {
+      const input = window.prompt(
+        "Lead sperren – Grund (optional, z. B. \u201eKeine Anrufe erwuenscht\u201c):",
+        grund
+      );
+      if (input === null) return;
+      grund = input.trim();
+    } else {
+      grund = "";
+    }
+    const prev = leads;
+    setLeads((ls) =>
+      ls.map((l) => (l.id === id ? { ...l, gesperrt: next, sperrgrund: grund } : l))
+    );
+    const { error } = await supabase
+      .from("leads")
+      .update({ gesperrt: next, sperrgrund: grund })
+      .eq("id", id);
+    if (error) {
+      setLeads(prev);
+      toast({
+        title: "Sperre nicht gespeichert",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+    toast({ title: next ? "Lead gesperrt" : "Sperre aufgehoben" });
+    await logLeadActivity(
+      id,
+      actor,
+      "status",
+      next
+        ? `Lead gesperrt (keine Anrufe)${grund ? ` \u00b7 Grund: ${grund}` : ""}`
+        : "Sperre aufgehoben"
+    );
+  };
+
   const filtered = useMemo(() => {
     return leads.filter((l) => {
       const matchesStatus =
@@ -402,9 +470,13 @@ const AdminLeads = () => {
         l.telefon.toLowerCase().includes(q) ||
         l.ort.toLowerCase().includes(q) ||
         l.plz.toLowerCase().includes(q);
-      return matchesStatus && matchesSource && matchesQuery;
+      const matchesDup = !onlyDuplicates || duplicateIds.has(l.id);
+      const matchesBlocked = !hideBlocked || !l.gesperrt;
+      return (
+        matchesStatus && matchesSource && matchesQuery && matchesDup && matchesBlocked
+      );
     });
-  }, [leads, statusFilter, sourceFilter, query]);
+  }, [leads, statusFilter, sourceFilter, query, onlyDuplicates, hideBlocked, duplicateIds]);
 
   const statusCounts = useMemo(() => {
     const c: Record<string, number> = { alle: leads.length };
@@ -423,6 +495,9 @@ const AdminLeads = () => {
       "PLZ",
       "Ort",
       "Status",
+      "Gesperrt",
+      "Sperrgrund",
+      "Duplikat",
       "Notizen",
     ];
     const escape = (v: string) => `"${(v ?? "").replace(/"/g, '""')}"`;
@@ -437,6 +512,9 @@ const AdminLeads = () => {
         l.plz,
         l.ort,
         STATUS_OPTIONS.find((s) => s.value === l.status)?.label ?? l.status,
+        l.gesperrt ? "Ja" : "Nein",
+        l.sperrgrund ?? "",
+        duplicateIds.has(l.id) ? "Ja" : "Nein",
         l.notes,
       ]
         .map(escape)
@@ -552,6 +630,36 @@ const AdminLeads = () => {
               </option>
             ))}
           </select>
+          <button
+            onClick={() => setOnlyDuplicates((v) => !v)}
+            className={`inline-flex items-center gap-2 rounded font-arial font-bold transition-colors ${
+              onlyDuplicates
+                ? "bg-ssm-primaer text-white"
+                : "bg-white text-ssm-grau hover:text-ssm-primaer"
+            }`}
+            style={{
+              fontSize: 12,
+              padding: "9px 12px",
+              border: `1.5px solid ${onlyDuplicates ? "#324642" : "#d8d9c6"}`,
+            }}
+          >
+            <Copy size={14} /> Nur Duplikate ({duplicateIds.size})
+          </button>
+          <button
+            onClick={() => setHideBlocked((v) => !v)}
+            className={`inline-flex items-center gap-2 rounded font-arial font-bold transition-colors ${
+              hideBlocked
+                ? "bg-ssm-primaer text-white"
+                : "bg-white text-ssm-grau hover:text-ssm-primaer"
+            }`}
+            style={{
+              fontSize: 12,
+              padding: "9px 12px",
+              border: `1.5px solid ${hideBlocked ? "#324642" : "#d8d9c6"}`,
+            }}
+          >
+            <Lock size={14} /> Gesperrte ausblenden
+          </button>
         </div>
 
         {/* Status pills */}
@@ -619,12 +727,18 @@ const AdminLeads = () => {
                   const fullName =
                     `${lead.vorname} ${lead.nachname}`.trim() || "—";
                   const hasNote = (lead.notes ?? "").trim().length > 0;
+                  const isDup = duplicateIds.has(lead.id);
+                  const blocked = lead.gesperrt;
                   return (
                     <tr
                       key={lead.id}
                       onClick={() => setSelectedId(lead.id)}
                       className="cursor-pointer transition-colors hover:bg-ssm-cream/60"
-                      style={{ borderBottom: "1px solid #eef0e2" }}
+                      style={{
+                        borderBottom: "1px solid #eef0e2",
+                        background: blocked ? "#F7F3F1" : undefined,
+                        opacity: blocked ? 0.7 : 1,
+                      }}
                     >
                       <td
                         className="font-arial text-ssm-primaer"
@@ -637,6 +751,40 @@ const AdminLeads = () => {
                             style={{ marginLeft: 6, opacity: 0.6 }}
                           >
                             📝
+                          </span>
+                        )}
+                        {isDup && (
+                          <span
+                            title="Mögliches Duplikat (gleiche E-Mail oder Telefonnummer)"
+                            className="font-arial font-bold uppercase"
+                            style={{
+                              marginLeft: 8,
+                              fontSize: 9,
+                              letterSpacing: "0.5px",
+                              padding: "2px 7px",
+                              borderRadius: 999,
+                              background: "#FBEFD6",
+                              color: "#9A7320",
+                            }}
+                          >
+                            Duplikat
+                          </span>
+                        )}
+                        {blocked && (
+                          <span
+                            title={lead.sperrgrund || "Gesperrt – keine Anrufe"}
+                            className="font-arial font-bold uppercase"
+                            style={{
+                              marginLeft: 6,
+                              fontSize: 9,
+                              letterSpacing: "0.5px",
+                              padding: "2px 7px",
+                              borderRadius: 999,
+                              background: "#FBE7E1",
+                              color: "#A4503D",
+                            }}
+                          >
+                            Gesperrt
                           </span>
                         )}
                       </td>
@@ -676,7 +824,16 @@ const AdminLeads = () => {
                         className="font-verdana text-ssm-grau"
                         style={{ padding: "11px 14px", whiteSpace: "nowrap" }}
                       >
-                        {lead.telefon ? (
+                        {!lead.telefon ? (
+                          "—"
+                        ) : blocked ? (
+                          <span
+                            title="Lead gesperrt – keine Anrufe"
+                            style={{ textDecoration: "line-through" }}
+                          >
+                            {lead.telefon}
+                          </span>
+                        ) : (
                           <a
                             href={`tel:${lead.telefon}`}
                             onClick={(e) => e.stopPropagation()}
@@ -684,8 +841,6 @@ const AdminLeads = () => {
                           >
                             {lead.telefon}
                           </a>
-                        ) : (
-                          "—"
                         )}
                       </td>
                       <td
@@ -742,6 +897,21 @@ const AdminLeads = () => {
                         style={{ padding: "11px 14px", textAlign: "right" }}
                         onClick={(e) => e.stopPropagation()}
                       >
+                        <button
+                          onClick={() => handleToggleBlock(lead.id)}
+                          title={
+                            blocked
+                              ? `Sperre aufheben${lead.sperrgrund ? ` (Grund: ${lead.sperrgrund})` : ""}`
+                              : "Lead sperren (keine Anrufe)"
+                          }
+                          className={`mr-2 rounded border p-1.5 transition-colors ${
+                            blocked
+                              ? "border-red-300 bg-red-50 text-red-600"
+                              : "border-ssm-akzent/60 text-ssm-grau hover:text-ssm-primaer"
+                          }`}
+                        >
+                          {blocked ? <Lock size={15} /> : <LockOpen size={15} />}
+                        </button>
                         <button
                           onClick={() => handleDelete(lead.id)}
                           title="Lead löschen"

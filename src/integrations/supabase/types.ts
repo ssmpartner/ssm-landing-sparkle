@@ -152,12 +152,14 @@ export type Database = {
         Row: {
           created_at: string
           email: string
+          gesperrt: boolean
           id: string
           nachname: string
           notes: string
           ort: string
           plz: string
           quelle: string
+          sperrgrund: string
           status: string
           telefon: string
           updated_at: string
@@ -166,12 +168,14 @@ export type Database = {
         Insert: {
           created_at?: string
           email?: string
+          gesperrt?: boolean
           id?: string
           nachname?: string
           notes?: string
           ort?: string
           plz?: string
           quelle?: string
+          sperrgrund?: string
           status?: string
           telefon?: string
           updated_at?: string
@@ -180,12 +184,14 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string
+          gesperrt?: boolean
           id?: string
           nachname?: string
           notes?: string
           ort?: string
           plz?: string
           quelle?: string
+          sperrgrund?: string
           status?: string
           telefon?: string
           updated_at?: string
