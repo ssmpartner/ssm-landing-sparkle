@@ -190,6 +190,8 @@ const AdminLeads = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [onlyDuplicates, setOnlyDuplicates] = useState(false);
   const [hideBlocked, setHideBlocked] = useState(false);
+  const [importSource, setImportSource] = useState<string>("auto");
+
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
