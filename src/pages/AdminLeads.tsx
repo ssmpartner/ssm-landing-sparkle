@@ -623,7 +623,22 @@ const AdminLeads = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <select
+            value={importSource}
+            onChange={(e) => setImportSource(e.target.value)}
+            title="Quelle für den nächsten Import"
+            className="rounded border border-ssm-akzent/60 bg-white font-verdana text-ssm-primaer"
+            style={{ padding: "9px 12px", fontSize: 13, outline: "none" }}
+          >
+            <option value="auto">Quelle: automatisch</option>
+            {SOURCE_OPTIONS.map((s) => (
+              <option key={s.value} value={s.value}>
+                Quelle: {s.label}
+              </option>
+            ))}
+          </select>
           <button
+
             onClick={() => fileInputRef.current?.click()}
             disabled={importing}
             className="inline-flex items-center gap-2 rounded bg-ssm-primaer px-3 py-2 font-arial font-bold text-white transition-colors hover:bg-ssm-primaer-dark disabled:opacity-50"
