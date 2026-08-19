@@ -873,7 +873,13 @@ const AdminLeads = () => {
                             appearance: "none",
                           }}
                         >
+                          {!SOURCE_OPTIONS.some(
+                            (s) => s.value === lead.quelle
+                          ) && (
+                            <option value={lead.quelle}>{lead.quelle}</option>
+                          )}
                           {SOURCE_OPTIONS.map((s) => (
+
                             <option key={s.value} value={s.value}>
                               {s.label}
                             </option>
