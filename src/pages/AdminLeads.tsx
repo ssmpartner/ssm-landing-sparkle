@@ -117,10 +117,12 @@ const mapSource = (raw: string): string => {
 };
 
 // Header aliases -> canonical field. Compared via normalize().
+// Exact matches win over "contains" matches to avoid e.g. "Video Name" -> Nachname.
 const FIELD_ALIASES: Record<string, string[]> = {
   quelle: ["quelle", "source", "kanal", "herkunft", "plattform", "channel"],
-  vorname: ["vorname", "firstname", "first"],
-  nachname: ["nachname", "name", "lastname", "last", "familienname"],
+  vorname: ["vorname", "firstname", "first", "givenname"],
+  nachname: ["nachname", "lastname", "last", "familienname", "surname"],
+  fullname: ["name", "fullname", "vollername", "vollstaendigername", "kontaktname"],
   email: ["email", "mail", "emailadresse", "mailadresse", "eemail"],
   telefon: [
     "telefon",
@@ -138,19 +140,40 @@ const FIELD_ALIASES: Record<string, string[]> = {
   notes: ["notes", "notiz", "notizen", "bemerkung", "bemerkungen", "kommentar"],
 };
 
+// Fields where fuzzy "contains" matching is too risky (headers like "Video Name").
+const EXACT_ONLY = new Set(["fullname", "nachname", "vorname"]);
+
 const detectMapping = (headers: string[]): Record<string, number> => {
   const map: Record<string, number> = {};
-  headers.forEach((h, idx) => {
-    const nh = normalize(h);
+  const used = new Set<number>();
+  const normed = headers.map((h) => normalize(h));
+
+  // Pass 1: exact header matches
+  normed.forEach((nh, idx) => {
     for (const [field, aliases] of Object.entries(FIELD_ALIASES)) {
-      if (map[field] !== undefined) continue;
-      if (aliases.some((a) => nh === a || nh.includes(a))) {
+      if (map[field] !== undefined || used.has(idx)) continue;
+      if (aliases.some((a) => nh === a)) {
         map[field] = idx;
+        used.add(idx);
       }
     }
   });
+
+  // Pass 2: fuzzy matches for the remaining fields
+  normed.forEach((nh, idx) => {
+    for (const [field, aliases] of Object.entries(FIELD_ALIASES)) {
+      if (map[field] !== undefined || used.has(idx) || EXACT_ONLY.has(field))
+        continue;
+      if (aliases.some((a) => nh.includes(a))) {
+        map[field] = idx;
+        used.add(idx);
+      }
+    }
+  });
+
   return map;
 };
+
 
 const AdminLeads = () => {
   const { toast } = useToast();
@@ -167,6 +190,8 @@ const AdminLeads = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [onlyDuplicates, setOnlyDuplicates] = useState(false);
   const [hideBlocked, setHideBlocked] = useState(false);
+  const [importSource, setImportSource] = useState<string>("auto");
+
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
@@ -223,13 +248,20 @@ const AdminLeads = () => {
 
       const records = (rows.slice(1) as unknown[][])
         .map((row) => {
-          const vorname = val(row, "vorname");
-          const nachname = val(row, "nachname");
+          let vorname = val(row, "vorname");
+          let nachname = val(row, "nachname");
+          const fullname = val(row, "fullname");
+          if (!vorname && !nachname && fullname) {
+            const parts = fullname.split(/\s+/);
+            vorname = parts.shift() ?? "";
+            nachname = parts.join(" ");
+          }
           const email = val(row, "email");
           const telefon = val(row, "telefon");
           const plz = val(row, "plz");
           const ort = val(row, "ort");
-          const quelle = mapSource(val(row, "quelle"));
+          const quelle =
+            importSource !== "auto" ? importSource : mapSource(val(row, "quelle"));
           const rawStatus = normalize(val(row, "status"));
           const status =
             STATUS_OPTIONS.find((s) => normalize(s.label) === rawStatus)
@@ -249,6 +281,7 @@ const AdminLeads = () => {
             notes,
           };
         })
+
         // Drop fully empty rows
         .filter(
           (r) =>
@@ -343,7 +376,37 @@ const AdminLeads = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const handleSourceChange = async (id: string, quelle: string) => {
+    const prev = leads;
+    const old = leads.find((l) => l.id === id);
+    setLeads((ls) => ls.map((l) => (l.id === id ? { ...l, quelle } : l)));
+    const { error } = await supabase
+      .from("leads")
+      .update({ quelle })
+      .eq("id", id);
+    if (error) {
+      setLeads(prev);
+      toast({
+        title: "Quelle nicht gespeichert",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+    if (old && old.quelle !== quelle) {
+      const labelOf = (v: string) =>
+        SOURCE_OPTIONS.find((s) => s.value === v)?.label ?? v;
+      await logLeadActivity(
+        id,
+        actor,
+        "quelle",
+        `Quelle: ${labelOf(old.quelle)} → ${labelOf(quelle)}`
+      );
+    }
+  };
+
   const handleStatusChange = async (id: string, status: string) => {
+
     const prev = leads;
     const old = leads.find((l) => l.id === id);
     setLeads((ls) => ls.map((l) => (l.id === id ? { ...l, status } : l)));
@@ -560,7 +623,22 @@ const AdminLeads = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <select
+            value={importSource}
+            onChange={(e) => setImportSource(e.target.value)}
+            title="Quelle für den nächsten Import"
+            className="rounded border border-ssm-akzent/60 bg-white font-verdana text-ssm-primaer"
+            style={{ padding: "9px 12px", fontSize: 13, outline: "none" }}
+          >
+            <option value="auto">Quelle: automatisch</option>
+            {SOURCE_OPTIONS.map((s) => (
+              <option key={s.value} value={s.value}>
+                Quelle: {s.label}
+              </option>
+            ))}
+          </select>
           <button
+
             onClick={() => fileInputRef.current?.click()}
             disabled={importing}
             className="inline-flex items-center gap-2 rounded bg-ssm-primaer px-3 py-2 font-arial font-bold text-white transition-colors hover:bg-ssm-primaer-dark disabled:opacity-50"
@@ -788,22 +866,42 @@ const AdminLeads = () => {
                           </span>
                         )}
                       </td>
-                      <td style={{ padding: "11px 14px" }}>
-                        <span
-                          className="font-arial font-bold uppercase"
+                      <td
+                        style={{ padding: "11px 14px" }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <select
+                          value={lead.quelle}
+                          onChange={(e) =>
+                            handleSourceChange(lead.id, e.target.value)
+                          }
+                          className="cursor-pointer font-arial font-bold uppercase"
                           style={{
                             fontSize: 10,
                             letterSpacing: "0.5px",
-                            padding: "3px 9px",
+                            padding: "4px 9px",
                             borderRadius: 999,
                             background: sc.bg,
                             color: sc.fg,
+                            border: "none",
+                            outline: "none",
+                            appearance: "none",
                           }}
                         >
-                          {SOURCE_OPTIONS.find((s) => s.value === lead.quelle)
-                            ?.label ?? lead.quelle}
-                        </span>
+                          {!SOURCE_OPTIONS.some(
+                            (s) => s.value === lead.quelle
+                          ) && (
+                            <option value={lead.quelle}>{lead.quelle}</option>
+                          )}
+                          {SOURCE_OPTIONS.map((s) => (
+
+                            <option key={s.value} value={s.value}>
+                              {s.label}
+                            </option>
+                          ))}
+                        </select>
                       </td>
+
                       <td
                         className="font-verdana text-ssm-grau"
                         style={{ padding: "11px 14px" }}
