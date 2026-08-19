@@ -117,10 +117,12 @@ const mapSource = (raw: string): string => {
 };
 
 // Header aliases -> canonical field. Compared via normalize().
+// Exact matches win over "contains" matches to avoid e.g. "Video Name" -> Nachname.
 const FIELD_ALIASES: Record<string, string[]> = {
   quelle: ["quelle", "source", "kanal", "herkunft", "plattform", "channel"],
-  vorname: ["vorname", "firstname", "first"],
-  nachname: ["nachname", "name", "lastname", "last", "familienname"],
+  vorname: ["vorname", "firstname", "first", "givenname"],
+  nachname: ["nachname", "lastname", "last", "familienname", "surname"],
+  fullname: ["name", "fullname", "vollername", "vollstaendigername", "kontaktname"],
   email: ["email", "mail", "emailadresse", "mailadresse", "eemail"],
   telefon: [
     "telefon",
@@ -138,19 +140,40 @@ const FIELD_ALIASES: Record<string, string[]> = {
   notes: ["notes", "notiz", "notizen", "bemerkung", "bemerkungen", "kommentar"],
 };
 
+// Fields where fuzzy "contains" matching is too risky (headers like "Video Name").
+const EXACT_ONLY = new Set(["fullname", "nachname", "vorname"]);
+
 const detectMapping = (headers: string[]): Record<string, number> => {
   const map: Record<string, number> = {};
-  headers.forEach((h, idx) => {
-    const nh = normalize(h);
+  const used = new Set<number>();
+  const normed = headers.map((h) => normalize(h));
+
+  // Pass 1: exact header matches
+  normed.forEach((nh, idx) => {
     for (const [field, aliases] of Object.entries(FIELD_ALIASES)) {
-      if (map[field] !== undefined) continue;
-      if (aliases.some((a) => nh === a || nh.includes(a))) {
+      if (map[field] !== undefined || used.has(idx)) continue;
+      if (aliases.some((a) => nh === a)) {
         map[field] = idx;
+        used.add(idx);
       }
     }
   });
+
+  // Pass 2: fuzzy matches for the remaining fields
+  normed.forEach((nh, idx) => {
+    for (const [field, aliases] of Object.entries(FIELD_ALIASES)) {
+      if (map[field] !== undefined || used.has(idx) || EXACT_ONLY.has(field))
+        continue;
+      if (aliases.some((a) => nh.includes(a))) {
+        map[field] = idx;
+        used.add(idx);
+      }
+    }
+  });
+
   return map;
 };
+
 
 const AdminLeads = () => {
   const { toast } = useToast();
