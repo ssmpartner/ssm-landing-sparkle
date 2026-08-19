@@ -246,13 +246,20 @@ const AdminLeads = () => {
 
       const records = (rows.slice(1) as unknown[][])
         .map((row) => {
-          const vorname = val(row, "vorname");
-          const nachname = val(row, "nachname");
+          let vorname = val(row, "vorname");
+          let nachname = val(row, "nachname");
+          const fullname = val(row, "fullname");
+          if (!vorname && !nachname && fullname) {
+            const parts = fullname.split(/\s+/);
+            vorname = parts.shift() ?? "";
+            nachname = parts.join(" ");
+          }
           const email = val(row, "email");
           const telefon = val(row, "telefon");
           const plz = val(row, "plz");
           const ort = val(row, "ort");
-          const quelle = mapSource(val(row, "quelle"));
+          const quelle =
+            importSource !== "auto" ? importSource : mapSource(val(row, "quelle"));
           const rawStatus = normalize(val(row, "status"));
           const status =
             STATUS_OPTIONS.find((s) => normalize(s.label) === rawStatus)
@@ -272,6 +279,7 @@ const AdminLeads = () => {
             notes,
           };
         })
+
         // Drop fully empty rows
         .filter(
           (r) =>
