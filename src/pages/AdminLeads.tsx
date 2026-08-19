@@ -851,22 +851,36 @@ const AdminLeads = () => {
                           </span>
                         )}
                       </td>
-                      <td style={{ padding: "11px 14px" }}>
-                        <span
-                          className="font-arial font-bold uppercase"
+                      <td
+                        style={{ padding: "11px 14px" }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <select
+                          value={lead.quelle}
+                          onChange={(e) =>
+                            handleSourceChange(lead.id, e.target.value)
+                          }
+                          className="cursor-pointer font-arial font-bold uppercase"
                           style={{
                             fontSize: 10,
                             letterSpacing: "0.5px",
-                            padding: "3px 9px",
+                            padding: "4px 9px",
                             borderRadius: 999,
                             background: sc.bg,
                             color: sc.fg,
+                            border: "none",
+                            outline: "none",
+                            appearance: "none",
                           }}
                         >
-                          {SOURCE_OPTIONS.find((s) => s.value === lead.quelle)
-                            ?.label ?? lead.quelle}
-                        </span>
+                          {SOURCE_OPTIONS.map((s) => (
+                            <option key={s.value} value={s.value}>
+                              {s.label}
+                            </option>
+                          ))}
+                        </select>
                       </td>
+
                       <td
                         className="font-verdana text-ssm-grau"
                         style={{ padding: "11px 14px" }}
