@@ -376,7 +376,37 @@ const AdminLeads = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const handleSourceChange = async (id: string, quelle: string) => {
+    const prev = leads;
+    const old = leads.find((l) => l.id === id);
+    setLeads((ls) => ls.map((l) => (l.id === id ? { ...l, quelle } : l)));
+    const { error } = await supabase
+      .from("leads")
+      .update({ quelle })
+      .eq("id", id);
+    if (error) {
+      setLeads(prev);
+      toast({
+        title: "Quelle nicht gespeichert",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+    if (old && old.quelle !== quelle) {
+      const labelOf = (v: string) =>
+        SOURCE_OPTIONS.find((s) => s.value === v)?.label ?? v;
+      await logLeadActivity(
+        id,
+        actor,
+        "quelle",
+        `Quelle: ${labelOf(old.quelle)} → ${labelOf(quelle)}`
+      );
+    }
+  };
+
   const handleStatusChange = async (id: string, status: string) => {
+
     const prev = leads;
     const old = leads.find((l) => l.id === id);
     setLeads((ls) => ls.map((l) => (l.id === id ? { ...l, status } : l)));
