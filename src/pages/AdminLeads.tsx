@@ -1023,8 +1023,8 @@ const AdminLeads = () => {
                 })}
               </tbody>
             </table>
-            </table>
             </div>
+
 
             {/* Pagination */}
             <div
