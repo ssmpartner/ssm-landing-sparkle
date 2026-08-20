@@ -818,7 +818,8 @@ const AdminLeads = () => {
                   className="font-arial uppercase text-ssm-grau"
                   style={{
                     fontSize: 10,
-                    letterSpacing: "0.5px",
+                    letterSpacing: "0.6px",
+                    background: "#f5f3ea",
                     borderBottom: "1.5px solid #e4e5d4",
                   }}
                 >
@@ -833,7 +834,7 @@ const AdminLeads = () => {
                 </tr>
               </thead>
               <tbody>
-                {paged.map((lead) => {
+                {paged.map((lead, idx) => {
                   const c = statusColor(lead.status);
                   const sc = sourceColor(lead.quelle);
                   const fullName =
@@ -845,11 +846,15 @@ const AdminLeads = () => {
                     <tr
                       key={lead.id}
                       onClick={() => setSelectedId(lead.id)}
-                      className="cursor-pointer transition-colors hover:bg-ssm-cream/60"
+                      className="group cursor-pointer transition-colors hover:bg-ssm-cream/70"
                       style={{
                         borderBottom: "1px solid #eef0e2",
-                        background: blocked ? "#F7F3F1" : undefined,
-                        opacity: blocked ? 0.7 : 1,
+                        background: blocked
+                          ? "#F7F3F1"
+                          : idx % 2 === 1
+                            ? "#fbfaf5"
+                            : undefined,
+                        opacity: blocked ? 0.75 : 1,
                       }}
                     >
                       <td
