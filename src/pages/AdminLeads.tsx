@@ -777,8 +777,10 @@ const AdminLeads = () => {
               : "Keine Leads für diese Filter gefunden."}
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-ssm-akzent/40 bg-white">
+          <div className="overflow-hidden rounded-xl border border-ssm-akzent/40 bg-white shadow-sm">
+            <div className="overflow-x-auto">
             <table className="w-full border-collapse" style={{ fontSize: 13 }}>
+
               <thead>
                 <tr
                   className="font-arial uppercase text-ssm-grau"
