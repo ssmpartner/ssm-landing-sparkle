@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Copy, Download, Lock, LockOpen, RefreshCw, Search, Trash2, Upload } from "lucide-react";
+import { ChevronLeft, ChevronRight, Copy, Download, Lock, LockOpen, RefreshCw, Search, Trash2, Upload } from "lucide-react";
 import * as XLSX from "xlsx";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
@@ -191,6 +191,8 @@ const AdminLeads = () => {
   const [onlyDuplicates, setOnlyDuplicates] = useState(false);
   const [hideBlocked, setHideBlocked] = useState(false);
   const [importSource, setImportSource] = useState<string>("auto");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
 
 
   const fetchLeads = useCallback(async () => {
@@ -541,6 +543,36 @@ const AdminLeads = () => {
     });
   }, [leads, statusFilter, sourceFilter, query, onlyDuplicates, hideBlocked, duplicateIds]);
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const safePage = Math.min(page, totalPages);
+
+  useEffect(() => {
+    setPage(1);
+  }, [query, statusFilter, sourceFilter, onlyDuplicates, hideBlocked]);
+
+  const paged = useMemo(
+    () => filtered.slice((safePage - 1) * pageSize, safePage * pageSize),
+    [filtered, safePage, pageSize]
+  );
+
+  const rangeStart = filtered.length === 0 ? 0 : (safePage - 1) * pageSize + 1;
+  const rangeEnd = Math.min(safePage * pageSize, filtered.length);
+
+  const pageNumbers = useMemo<(number | "\u2026")[]>(() => {
+    const out: (number | "\u2026")[] = [];
+    const add = (n: number) => out.push(n);
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) add(i);
+      return out;
+    }
+    add(1);
+    if (safePage > 3) out.push("\u2026");
+    for (let i = Math.max(2, safePage - 1); i <= Math.min(totalPages - 1, safePage + 1); i++) add(i);
+    if (safePage < totalPages - 2) out.push("\u2026");
+    add(totalPages);
+    return out;
+  }, [totalPages, safePage]);
+
   const statusCounts = useMemo(() => {
     const c: Record<string, number> = { alle: leads.length };
     for (const l of leads) c[l.status] = (c[l.status] ?? 0) + 1;
@@ -777,14 +809,17 @@ const AdminLeads = () => {
               : "Keine Leads für diese Filter gefunden."}
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-ssm-akzent/40 bg-white">
+          <div className="overflow-hidden rounded-xl border border-ssm-akzent/40 bg-white shadow-sm">
+            <div className="overflow-x-auto">
             <table className="w-full border-collapse" style={{ fontSize: 13 }}>
+
               <thead>
                 <tr
                   className="font-arial uppercase text-ssm-grau"
                   style={{
                     fontSize: 10,
-                    letterSpacing: "0.5px",
+                    letterSpacing: "0.6px",
+                    background: "#f5f3ea",
                     borderBottom: "1.5px solid #e4e5d4",
                   }}
                 >
@@ -799,7 +834,7 @@ const AdminLeads = () => {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((lead) => {
+                {paged.map((lead, idx) => {
                   const c = statusColor(lead.status);
                   const sc = sourceColor(lead.quelle);
                   const fullName =
@@ -811,17 +846,34 @@ const AdminLeads = () => {
                     <tr
                       key={lead.id}
                       onClick={() => setSelectedId(lead.id)}
-                      className="cursor-pointer transition-colors hover:bg-ssm-cream/60"
+                      className="group cursor-pointer transition-colors hover:bg-ssm-cream/70"
                       style={{
                         borderBottom: "1px solid #eef0e2",
-                        background: blocked ? "#F7F3F1" : undefined,
-                        opacity: blocked ? 0.7 : 1,
+                        background: blocked
+                          ? "#F7F3F1"
+                          : idx % 2 === 1
+                            ? "#fbfaf5"
+                            : undefined,
+                        opacity: blocked ? 0.75 : 1,
                       }}
                     >
                       <td
                         className="font-arial text-ssm-primaer"
                         style={{ padding: "11px 14px", fontWeight: 700 }}
                       >
+                        <span
+                          aria-hidden
+                          className="mr-2 inline-flex items-center justify-center rounded-full font-arial font-bold align-middle"
+                          style={{
+                            width: 26,
+                            height: 26,
+                            fontSize: 10,
+                            background: "#e4e9e2",
+                            color: "#324642",
+                          }}
+                        >
+                          {(`${lead.vorname[0] ?? ""}${lead.nachname[0] ?? ""}`.toUpperCase()) || "?"}
+                        </span>
                         {fullName}
                         {hasNote && (
                           <span
@@ -1023,8 +1075,92 @@ const AdminLeads = () => {
                 })}
               </tbody>
             </table>
+            </div>
+
+
+            {/* Pagination */}
+            <div
+              className="flex flex-wrap items-center justify-between gap-3 border-t border-ssm-akzent/40 bg-ssm-cream/40"
+              style={{ padding: "12px 14px" }}
+            >
+              <div className="font-verdana text-ssm-grau" style={{ fontSize: 12 }}>
+                {rangeStart}–{rangeEnd} von {filtered.length} Leads
+                {filtered.length !== leads.length && ` (gefiltert aus ${leads.length})`}
+              </div>
+              <div className="flex items-center gap-3">
+                <label
+                  className="flex items-center gap-2 font-verdana text-ssm-grau"
+                  style={{ fontSize: 12 }}
+                >
+                  Pro Seite
+                  <select
+                    value={pageSize}
+                    onChange={(e) => {
+                      setPageSize(Number(e.target.value));
+                      setPage(1);
+                    }}
+                    className="rounded border border-ssm-akzent/60 bg-white font-verdana text-ssm-primaer"
+                    style={{ padding: "5px 8px", fontSize: 12, outline: "none" }}
+                  >
+                    {[25, 50, 100, 200].map((n) => (
+                      <option key={n} value={n}>
+                        {n}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={safePage === 1}
+                    className="rounded border border-ssm-akzent/60 bg-white p-1.5 text-ssm-primaer transition-colors hover:bg-ssm-cream disabled:opacity-40"
+                    title="Vorherige Seite"
+                  >
+                    <ChevronLeft size={15} />
+                  </button>
+                  {pageNumbers.map((p, i) =>
+                    p === "…" ? (
+                      <span
+                        key={`gap-${i}`}
+                        className="font-verdana text-ssm-grau"
+                        style={{ fontSize: 12, padding: "0 4px" }}
+                      >
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={p}
+                        onClick={() => setPage(p as number)}
+                        className={`rounded font-arial font-bold transition-colors ${
+                          p === safePage
+                            ? "bg-ssm-primaer text-white"
+                            : "bg-white text-ssm-grau hover:text-ssm-primaer"
+                        }`}
+                        style={{
+                          fontSize: 12,
+                          minWidth: 30,
+                          padding: "6px 8px",
+                          border: `1.5px solid ${p === safePage ? "#324642" : "#d8d9c6"}`,
+                        }}
+                      >
+                        {p}
+                      </button>
+                    )
+                  )}
+                  <button
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={safePage === totalPages}
+                    className="rounded border border-ssm-akzent/60 bg-white p-1.5 text-ssm-primaer transition-colors hover:bg-ssm-cream disabled:opacity-40"
+                    title="Nächste Seite"
+                  >
+                    <ChevronRight size={15} />
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
+
 
       <LeadModal
         lead={leads.find((l) => l.id === selectedId) ?? null}
