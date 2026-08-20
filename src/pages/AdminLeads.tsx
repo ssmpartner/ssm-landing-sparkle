@@ -861,6 +861,19 @@ const AdminLeads = () => {
                         className="font-arial text-ssm-primaer"
                         style={{ padding: "11px 14px", fontWeight: 700 }}
                       >
+                        <span
+                          aria-hidden
+                          className="mr-2 inline-flex items-center justify-center rounded-full font-arial font-bold align-middle"
+                          style={{
+                            width: 26,
+                            height: 26,
+                            fontSize: 10,
+                            background: "#e4e9e2",
+                            color: "#324642",
+                          }}
+                        >
+                          {(`${lead.vorname[0] ?? ""}${lead.nachname[0] ?? ""}`.toUpperCase()) || "?"}
+                        </span>
                         {fullName}
                         {hasNote && (
                           <span
