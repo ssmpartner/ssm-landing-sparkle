@@ -1023,8 +1023,92 @@ const AdminLeads = () => {
                 })}
               </tbody>
             </table>
+            </table>
+            </div>
+
+            {/* Pagination */}
+            <div
+              className="flex flex-wrap items-center justify-between gap-3 border-t border-ssm-akzent/40 bg-ssm-cream/40"
+              style={{ padding: "12px 14px" }}
+            >
+              <div className="font-verdana text-ssm-grau" style={{ fontSize: 12 }}>
+                {rangeStart}–{rangeEnd} von {filtered.length} Leads
+                {filtered.length !== leads.length && ` (gefiltert aus ${leads.length})`}
+              </div>
+              <div className="flex items-center gap-3">
+                <label
+                  className="flex items-center gap-2 font-verdana text-ssm-grau"
+                  style={{ fontSize: 12 }}
+                >
+                  Pro Seite
+                  <select
+                    value={pageSize}
+                    onChange={(e) => {
+                      setPageSize(Number(e.target.value));
+                      setPage(1);
+                    }}
+                    className="rounded border border-ssm-akzent/60 bg-white font-verdana text-ssm-primaer"
+                    style={{ padding: "5px 8px", fontSize: 12, outline: "none" }}
+                  >
+                    {[25, 50, 100, 200].map((n) => (
+                      <option key={n} value={n}>
+                        {n}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={safePage === 1}
+                    className="rounded border border-ssm-akzent/60 bg-white p-1.5 text-ssm-primaer transition-colors hover:bg-ssm-cream disabled:opacity-40"
+                    title="Vorherige Seite"
+                  >
+                    <ChevronLeft size={15} />
+                  </button>
+                  {pageNumbers.map((p, i) =>
+                    p === "…" ? (
+                      <span
+                        key={`gap-${i}`}
+                        className="font-verdana text-ssm-grau"
+                        style={{ fontSize: 12, padding: "0 4px" }}
+                      >
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={p}
+                        onClick={() => setPage(p as number)}
+                        className={`rounded font-arial font-bold transition-colors ${
+                          p === safePage
+                            ? "bg-ssm-primaer text-white"
+                            : "bg-white text-ssm-grau hover:text-ssm-primaer"
+                        }`}
+                        style={{
+                          fontSize: 12,
+                          minWidth: 30,
+                          padding: "6px 8px",
+                          border: `1.5px solid ${p === safePage ? "#324642" : "#d8d9c6"}`,
+                        }}
+                      >
+                        {p}
+                      </button>
+                    )
+                  )}
+                  <button
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={safePage === totalPages}
+                    className="rounded border border-ssm-akzent/60 bg-white p-1.5 text-ssm-primaer transition-colors hover:bg-ssm-cream disabled:opacity-40"
+                    title="Nächste Seite"
+                  >
+                    <ChevronRight size={15} />
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
+
 
       <LeadModal
         lead={leads.find((l) => l.id === selectedId) ?? null}
