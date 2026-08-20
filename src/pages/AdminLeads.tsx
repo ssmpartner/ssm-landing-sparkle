@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Copy, Download, Lock, LockOpen, RefreshCw, Search, Trash2, Upload } from "lucide-react";
+import { ChevronLeft, ChevronRight, Copy, Download, Lock, LockOpen, RefreshCw, Search, Trash2, Upload } from "lucide-react";
 import * as XLSX from "xlsx";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
@@ -191,6 +191,8 @@ const AdminLeads = () => {
   const [onlyDuplicates, setOnlyDuplicates] = useState(false);
   const [hideBlocked, setHideBlocked] = useState(false);
   const [importSource, setImportSource] = useState<string>("auto");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
 
 
   const fetchLeads = useCallback(async () => {
@@ -541,6 +543,36 @@ const AdminLeads = () => {
     });
   }, [leads, statusFilter, sourceFilter, query, onlyDuplicates, hideBlocked, duplicateIds]);
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const safePage = Math.min(page, totalPages);
+
+  useEffect(() => {
+    setPage(1);
+  }, [query, statusFilter, sourceFilter, onlyDuplicates, hideBlocked]);
+
+  const paged = useMemo(
+    () => filtered.slice((safePage - 1) * pageSize, safePage * pageSize),
+    [filtered, safePage, pageSize]
+  );
+
+  const rangeStart = filtered.length === 0 ? 0 : (safePage - 1) * pageSize + 1;
+  const rangeEnd = Math.min(safePage * pageSize, filtered.length);
+
+  const pageNumbers = useMemo<(number | "\u2026")[]>(() => {
+    const out: (number | "\u2026")[] = [];
+    const add = (n: number) => out.push(n);
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) add(i);
+      return out;
+    }
+    add(1);
+    if (safePage > 3) out.push("\u2026");
+    for (let i = Math.max(2, safePage - 1); i <= Math.min(totalPages - 1, safePage + 1); i++) add(i);
+    if (safePage < totalPages - 2) out.push("\u2026");
+    add(totalPages);
+    return out;
+  }, [totalPages, safePage]);
+
   const statusCounts = useMemo(() => {
     const c: Record<string, number> = { alle: leads.length };
     for (const l of leads) c[l.status] = (c[l.status] ?? 0) + 1;
@@ -801,7 +833,7 @@ const AdminLeads = () => {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((lead) => {
+                {paged.map((lead) => {
                   const c = statusColor(lead.status);
                   const sc = sourceColor(lead.quelle);
                   const fullName =
